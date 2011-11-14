@@ -1,0 +1,72 @@
+
+7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
+
+Scanning
+
+Updating archive C:\Nicksdata\data\M201107180800.zip
+
+Compressing  A201107180800.txt
+Compressing  M201107180800.bin
+Compressing  M201107180800.xml
+
+Everything is Ok
+
+7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
+
+Scanning
+
+Updating archive C:\Nicksdata\data\M201107180800.zip
+
+Compressing  A201107180800.txt
+Compressing  M201107180800.bin
+Compressing  M201107180800.xml
+
+Everything is Ok
+
+7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
+
+Scanning
+
+Updating archive C:\Nicksdata\data\M201107180800.zip
+
+Compressing  A201107180800.txt
+Compressing  M201107180800.bin
+Compressing  M201107180800.xml
+
+Everything is Ok
+
+7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
+
+Scanning
+
+Updating archive C:\Nicksdata\data\M201107180800.zip
+
+Compressing  A201107180800.txt
+Compressing  M201107180800.bin
+Compressing  M201107180800.xml
+
+Everything is Ok
+
+7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
+
+Scanning
+
+Updating archive C:\Nicksdata\data\M201107180800.zip
+
+Compressing  A201107180800.txt
+Compressing  M201107180800.bin
+Compressing  M201107180800.xml
+
+Everything is Ok
+
+7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
+
+Scanning
+
+Updating archive C:\Nicksdata\data\M201107180800.zip
+
+Compressing  A201107180800.txt
+Compressing  M201107180800.bin
+Compressing  M201107180800.xml
+
+Everything is Ok
