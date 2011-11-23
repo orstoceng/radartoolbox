@@ -1,1 +1,0 @@
-for %%x in (..\..\data\M*.bin) do radarProcess %%x
