@@ -27,8 +27,6 @@
 
 // The one and only application object
 
-CWinApp theApp;
-
 using namespace std;
 
 void DisplayErrorBox(LPTSTR lpszFunction);
@@ -46,14 +44,6 @@ int main(int argc, char *argv[])
 {
 //	Engine *Eg;
 //	Eg = engOpen("\0");
-   WIN32_FIND_DATA ffd;
-
-
-
-
-
-
-
     
    AnyOption *opt = new AnyOption();
    // set up useage/help
