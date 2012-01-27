@@ -95,7 +95,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v4.0\include;C:\Program Files\MATLAB\R2011a\extern\include;..\boost_1_48_0;C:\Nick%27sdata\netcdf-4.1.2\include;C:\Nick'sdata\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v4.0\include;..\boost_1_48_0;C:\Visual_Studio_Projects\radar_toolbox_svn\netcdf-4.1.3\include;C:\Nick'sdata\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
