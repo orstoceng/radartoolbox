@@ -45,66 +45,66 @@ int main(int argc, char *argv[])
 //	Engine *Eg;
 //	Eg = engOpen("\0");
     
-   AnyOption *opt = new AnyOption();
-   // set up useage/help
-   opt->addUsage( "" );
-   opt->addUsage( "Usage: radarprocess [-y year] [-m:metadata file] [-file binaryfilename]" );
-   opt->addUsage( "" );
-   opt->addUsage( " -h  --help            Prints this help " );
-   opt->addUsage( " -y  --year2010       force year for naming" );
-   opt->addUsage( " -m  --mata meta.xml   select metadata file (default meta.xml)" );
-   opt->addUsage( " -r  --rename          rename ISR files to a datebased name" );
-   opt->addUsage( " -z  --zip             zip files up into a single file (no compression)" );
-   opt->addUsage( " --file  ISR binary file" );
-   opt->addUsage( " " );
-   opt->addUsage( " Assumptions Azimuth file start with A" );
-   opt->addUsage( " Assumptions magnitudes start with M or N" );
-   opt->addUsage( " Assumptions velocity starts with a P (phase)" );
-   opt->addUsage( "" );
-   opt->setFlag(  "help", 'h' );   /* a flag (takes no argument), supporting long and short form */ 
-   opt->setOption(  "year", 'y' ); /* an option (takes an argument), supporting long and short form */
-   opt->setOption(  "meta",'m' );      /* an option (takes an argument), supporting only long form */
-   opt->setOption(  "nav",'n' );      /* an option (takes an argument), supporting only long form */
-   opt->setOption(  "meta",'m' );      /* an option (takes an argument), supporting only long form */
-   opt->setFlag(  "rename",'r' );
-   opt->setFlag(  "zip",'z' );
-   opt->setOption(  "file");
-   opt->processCommandArgs( argc,(char **)  argv );
-   if( opt->getFlag( "help" ) || opt->getFlag( 'h' ) || (argc == 1 ) ) { // No args or help print option
+    // A
+	AnyOption *opt = new AnyOption();
+	// set up useage/help
+	opt->addUsage( "" );
+	opt->addUsage( "Usage: radarprocess [-y year] [-m:metadata file] [-file binaryfilename]" );
+	opt->addUsage( "" );
+	opt->addUsage( " -h  --help            Prints this help " );
+	opt->addUsage( " -y  --year2010       force year for naming" );
+	opt->addUsage( " -m  --mata meta.xml   select metadata file (default meta.xml)" );
+	opt->addUsage( " -r  --rename          rename ISR files to a datebased name" );
+	opt->addUsage( " -z  --zip             zip files up into a single file (no compression)" );
+	opt->addUsage( " --file  ISR binary file" );
+	opt->addUsage( " " );
+	opt->addUsage( " Assumptions Azimuth file start with A" );
+	opt->addUsage( " Assumptions magnitudes start with M or N" );
+	opt->addUsage( " Assumptions velocity starts with a P (phase)" );
+	opt->addUsage( "" );
+	opt->setFlag(  "help", 'h' );   /* a flag (takes no argument), supporting long and short form */ 
+	opt->setOption(  "year", 'y' ); /* an option (takes an argument), supporting long and short form */
+	opt->setOption(  "meta",'m' );      /* an option (takes an argument), supporting only long form */
+	opt->setOption(  "nav",'n' );      /* an option (takes an argument), supporting only long form */
+	opt->setOption(  "meta",'m' );      /* an option (takes an argument), supporting only long form */
+	opt->setFlag(  "rename",'r' );
+	opt->setFlag(  "zip",'z' );
+	opt->setOption(  "file");
+	opt->processCommandArgs( argc,(char **)  argv );
+	if (opt->getFlag( "help" ) || opt->getFlag( 'h' ) || (argc == 1 ) ) { // No args or help print option
 		opt->printUsage();
-        delete opt;
+		delete opt;
 		return(-1);
-   }
-  // atoi(op-t->getValue('r'))
-   ;
-   if (opt->getValue("file")!=NULL) {
+	}
+ // atoi(op-t->getValue('r'));
+	if (opt->getValue("file")!=NULL) {
 		cout << "output:\n\rsourcefile:" << opt->getValue("file") <<"\n\r";
-   IsrRadarFile isr(opt->getValue("file"));
-   if (opt->getFlag( "rename" ) || opt->getFlag( 'r' ))
-	   if (opt->getValue("year")!=NULL)
-		isr.renameSource(atoi(opt->getValue("year")));
-	   else
-		isr.renameSource(-1);
+	IsrRadarFile isr(opt->getValue("file"));
+	if (opt->getFlag( "rename" ) || opt->getFlag( 'r' ))
+		if (opt->getValue("year")!=NULL)
+			isr.renameSource(atoi(opt->getValue("year")));
+		else
+			isr.renameSource(-1);
 
-   {
+	{
 		time_t t =  isr.getStartTime();
 		cout << "output_" << opt->getValue("file") <<" " << asctime(localtime( &t));
 		isr.processFile();
-   }
-    if (opt->getFlag( "zip" ) || opt->getFlag( 'z' )){
+	}
+	if (opt->getFlag( "zip" ) || opt->getFlag( 'z' )){
 		isr.zipfiles();
 	}
  
-   } else 
+	} else 
 		cout << "need --file filename!";
 
 
 
- //  addPulseData(netCdfFileName,sampleRate,scans,bins,collectionsPerRotation);
+//  addPulseData(netCdfFileName,sampleRate,scans,bins,collectionsPerRotation);
 //   addAzimuth(netCdfFileName,binfileName);
- //  addNavigation(netCdfFileName,navFileName);
-  delete(opt);
-  exit(1);
+//  addNavigation(netCdfFileName,navFileName);
+	delete(opt);
+	exit(1);
 }
 
 void DisplayErrorBox(LPTSTR lpszFunction) 
