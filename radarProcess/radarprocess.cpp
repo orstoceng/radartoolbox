@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 	opt->addUsage( "" );
 	opt->addUsage( " -h  --help            Prints this help " );
 	opt->addUsage( " -y  --year 2010       force year for naming" );
-	opt->addUsage( " -m  --mata meta.xml   select metadata file (default meta.xml)" );
+	opt->addUsage( " -m  --meta meta.xml   select metadata file (default meta.xml)" );
 	opt->addUsage( " -r  --rename          rename ISR files to a datebased name" );
 	opt->addUsage( " -z  --zip             zip files up into a single file (no compression)" );
 	opt->addUsage( " --file  ISR binary file" );
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 		// Create the IsrRadarFile object (calls the constructor).
 		// The file header is read in here
 		IsrRadarFile isr(opt->getValue("file"));
-	
+
 		// Rename the binary file, if the rename flag was set.
 		if (opt->getFlag( "rename" ) || opt->getFlag( 'r' )) {
 			// Use the year set in the year option, if provided.
@@ -105,19 +105,19 @@ int main(int argc, char *argv[])
 			isr.processFile();
 		}
 
-		// If the zip flag is set, 
+		// If the zip flag is set, put the A*.txt and M*.bin files into a (not-compressed) ZIP file.
 		if (opt->getFlag( "zip" ) || opt->getFlag( 'z' )){
 			isr.zipfiles();
 		}
- 
+
 	} else 
 		cout << "need --file filename!";
 
 
 
-//  addPulseData(netCdfFileName,sampleRate,scans,bins,collectionsPerRotation);
-//   addAzimuth(netCdfFileName,binfileName);
-//  addNavigation(netCdfFileName,navFileName);
+	//  addPulseData(netCdfFileName,sampleRate,scans,bins,collectionsPerRotation);
+	//   addAzimuth(netCdfFileName,binfileName);
+	//  addNavigation(netCdfFileName,navFileName);
 	delete(opt);
 	exit(1);
 }
