@@ -1,9 +1,23 @@
-// radarrename.cpp : Defines the entry point for the console application.
-//
+/*******************************************************************************
+	Program:		Radar Process
+
+	File:			radarprocess.cpp
+
+	Function:		Contains main()
+
+	Description:	main() processes the command-line arguments using the 
+					AnyOption class, renames the input files (M*.bin and A*.txt)
+					and then processes the files using the IsrRadarFile class.
+
+*******************************************************************************/
 
 #include "stdafx.h"
 #include "Resource.h"
 #include "anyoption.h"
+#include "tinyxml.h"
+#include "IsrRadarFile.h"
+#include "GpuGrid.h"
+
 #include <windows.h> 
 #include <tchar.h> 
 #include <stdio.h>
@@ -12,9 +26,6 @@
 #include <fstream>
 #include <stdlib.h>
 #include <netcdf.h>
-#include "tinyxml.h"
-#include "IsrRadarFile.h"
-#include "GpuGrid.h"
 #include <ctime>
 #include <sstream>
 #include <string>
@@ -99,9 +110,12 @@ int main(int argc, char *argv[])
 				isr.renameSource(-1);
 		}
 
+		// Main processing block
 		{
+			// print the filename and the start time of the capture
 			time_t t =  isr.getStartTime();
 			cout << "output_" << opt->getValue("file") <<" " << asctime(localtime( &t));
+			// Process the binary file
 			isr.processFile();
 		}
 
@@ -121,6 +135,8 @@ int main(int argc, char *argv[])
 	delete(opt);
 	exit(1);
 }
+
+// NB - I don't think any of the functions listed in the remainder of this file (below) are ever used. They appear to be legacy code. - R. Pittman
 
 void DisplayErrorBox(LPTSTR lpszFunction) 
 { 
