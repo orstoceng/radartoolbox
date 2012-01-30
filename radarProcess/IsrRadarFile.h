@@ -1,23 +1,31 @@
+/*******************************************************************************
+	Program:		Radar Process
+
+	File:			IsrRadarFile.h
+
+	Function:		Contains declarations for class IsrRadarFile
+
+	Description:	See IsrRadarFile.cpp.
+
+*******************************************************************************/
+
+#include "tinyxml.h"
+#include "radarrename.h"
+#include "anyoption.h"
+#include "tinyxml.h"
+
 #include <boost/filesystem.hpp>
 #include <boost/interprocess/file_mapping.hpp>
 #include <boost/interprocess/mapped_region.hpp>
-#include "tinyxml.h"
 #include <string>
-#include "radarrename.h"
-#include "anyoption.h"
 #include <windows.h>
 #include <tchar.h> 
 #include <stdio.h>
 #include <strsafe.h>
 #include <iostream>
-#include <string>
 #include <fstream>
 #include <stdlib.h>
 #include <netcdfcpp.h>	
-#include "tinyxml.h"
-#include <boost/filesystem.hpp>
-
-
 
 
 #ifndef ISRRADARFILE_H
