@@ -1,9 +1,22 @@
-// radarrename.cpp : Defines the entry point for the console application.
+/*******************************************************************************
+	Program:		Radar Process
 
+	File:			IsrRadarFile.cpp
+
+	Function:		Contains methods for class IsrRadarFile
+
+	Description:	IsrRadarFile processes the M*.bin and A*.txt files generated
+					by Dennis Trizna of Imaging Science Research (ISR).
+
+*******************************************************************************/
 
 #include "stdafx.h"
 #include "radarrename.h"
 #include "anyoption.h"
+#include "tinyxml.h"
+#include "IsrRadarFile.h"
+#include "GpuGrid.h"
+
 #include <windows.h>
 #include <tchar.h> 
 #include <stdio.h>
@@ -13,11 +26,8 @@
 #include <fstream>
 #include <stdlib.h>
 #include <netcdfcpp.h>	
-#include "tinyxml.h"
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
-#include "IsrRadarFile.h"
-#include "GpuGrid.h"
 #include <IL/il.h>
 #include <GL/gl.h>
 
