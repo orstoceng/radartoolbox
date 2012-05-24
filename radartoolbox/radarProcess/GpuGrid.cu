@@ -45,7 +45,7 @@ __global__ void interpCartKernel(float* output, int width, int height, float ant
 		float azimuth1D= tex1D(texRefAzimuth, (azimuth)); // interp the bin
         float range = sqrt((xdistance*xdistance)+(ydistance*ydistance));
 		range = sqrt((antennaHieght*antennaHieght)+(range*range))/rangeBinSize; // allow for the height of the antenna
-		output[idx * width + idy] = tex2D(texRefPolar, range,azimuth1D)*10 * (float)(range<maxrange) * (float) (azimuth<maxAzimuthBin)* ((float)(tvg)*range*rangeBinSize/1000); //(float)x;//tex2D(texRef, tu, tv); 
+		output[((height-1)*(width))-(idx * width) + idy] = tex2D(texRefPolar, range,azimuth1D)*10 * (float)(range<maxrange) * (float) (azimuth<maxAzimuthBin); //* ((float)(tvg)*range*rangeBinSize/1000); //(float)x;//tex2D(texRef, tu, tv); 
 
 	}
 }
@@ -240,7 +240,7 @@ float *GpuGrid::interpolateCartFrame(float *sourceFrame,float *collectionAngles,
 	dim3 dimGrid(xgrid,ygrid); 
 	//convert heading to radians
 	heading = PI*heading/180; 
-	interpCartKernel<<<dimGrid, dimBlock>>>(deviceFrameBuffer, yOutputSize,xOutputSize,14.0,xOffset,yOffset,heading,gridSize,rangeBinSize,(PI*angleStep)/180,numberOfRangeBins,tvg,maxAngleBin);
+	interpCartKernel<<<dimGrid, dimBlock>>>(deviceFrameBuffer, yOutputSize,xOutputSize,14.0,xOffset,yOffset,heading-(PI/2),gridSize,rangeBinSize,(PI*angleStep)/180,numberOfRangeBins,tvg,maxAngleBin);
 	cudaMemcpy(interplatedPolarFrame, deviceFrameBuffer, yOutputSize*xOutputSize*sizeof(float), cudaMemcpyDeviceToHost);
 	cudaUnbindTexture( texRefPolar );
 	cudaUnbindTexture( texRefAzimuth );

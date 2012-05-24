@@ -45,6 +45,7 @@ using namespace std;
 
 
 
+
 void intrepPolarFrame(float *frameBuffer,short *rawFrameBuffer,int numberOfCollectionsPerRotation,int numberOfRangeBins,int interpCount);
 bool initGPU();
 IsrRadarFile::IsrRadarFile(string fileName) {
@@ -77,6 +78,7 @@ void IsrRadarFile::getFrameAngles(int frameIndex,float *frameAngle){
 void IsrRadarFile::getFrame(int frameIndex,float *frameBuffer, double *frameTime, float *frameAngle)
 {
 	const short *framePtr = static_cast<short*>(dataAddress)+10+numberOfCollectionsPerRotation*numberOfRangeBins*frameIndex;
+	if (framePtr<static_cast<short*>(dataAddress)+dataSize-(numberOfCollectionsPerRotation*numberOfRangeBins)) {
 	 for (int i=0;i<numberOfCollectionsPerRotation;i++) {
 		// check for zipper
 		if (*(framePtr+(i*numberOfRangeBins)+18)!=0) { // zipper found
@@ -94,6 +96,9 @@ void IsrRadarFile::getFrame(int frameIndex,float *frameBuffer, double *frameTime
 	}
 	memcpy(frameTime,collectionTime+(numberOfCollectionsPerRotation*frameIndex),numberOfCollectionsPerRotation*sizeof(float));
 	getFrameAngles(frameIndex,frameAngle);
+	} else
+		cout << "over reading frames\r\n";
+
 }
 
   void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize){
@@ -281,7 +286,7 @@ void IsrRadarFile::makeNetCdfFileName(string productCode, string extension)
 	tm *ptm = localtime ( &t );
 	char fn[MAX_PATH];
 	sprintf(fn,"%s\\%s_%s-%s_RADAR_%04u-%02u-%02u_%02u-%02u_%s.%s",outputPath.c_str(),projectCode.c_str(),experimentCode.c_str(),deploymentCode.c_str(),ptm->tm_year+1900,
-		ptm->tm_mon+1,ptm->tm_mday,ptm->tm_hour,ptm->tm_sec,productCode.c_str(),extension.c_str());
+		ptm->tm_mon+1,ptm->tm_mday,ptm->tm_hour,ptm->tm_min,productCode.c_str(),extension.c_str());
 	netCdfFileName = string(fn);
 }
 
@@ -380,7 +385,7 @@ bool IsrRadarFile::readAFile()
 		  float startTime =getStartTime();
 		  for (int i=0;i<numberOfCollectionsPerRotation*numberOfRotations;i++)
 
-		  collectionTime[i]= startTime+ (ratotionInterval*(i/numberOfCollectionsPerRotation)) +(incTime * (float)(i %  numberOfCollectionsPerRotation));
+		  collectionTime[i]= startTime+ (incTime *float(i % numberOfCollectionsPerRotation)) +(ratotionInterval* (float)(i /  numberOfCollectionsPerRotation));
 
 	  }
 	  delete(a_file);
@@ -426,7 +431,7 @@ bool IsrRadarFile::readAFile()
 // read in the header information from the bin file
 void IsrRadarFile::readRadarParams()
 {
-  
+  numberOfRangeBins = -1;
   ifstream file (fileName, ios::in|ios::binary|ios::ate);
   if (file.is_open())
   {
@@ -442,7 +447,8 @@ void IsrRadarFile::readRadarParams()
 	numberOfWaveSumed = headerblock[6];
 	delete[] headerblock;
 
-  }
+  } else
+	  cout << "cannot read header!";
 }
 
   void IsrRadarFile::check_err(const int stat, const int line, const char *file) {
@@ -515,13 +521,13 @@ void IsrRadarFile::readRadarParams()
 
   void IsrRadarFile::saveAsFixedPolarNetCdfFile(const char *fileName)
   {
-
+/*
 	  if (fileName==NULL)
 		  fileName = netCdfFileName.c_str();;
-	  NcFile ncFile(fileName, NcFile::Replace);
+	  NcFile ncFile(fileName, NcFile::replace);
 	  NcVar *rangeVar, *timeVar, *collectionVar, *azimuthVar,*collectionTimeVar,*magVar,*latVar,*longVar,*northingVar,*eastingVar;
 		  /* assign global attributes */
-	   ncFile.add_att( "project", project.length(),project.c_str());
+/*	   ncFile.add_att( "project", project.length(),project.c_str());
 	   ncFile.add_att( "experiment",experiment.c_str());
 	   ncFile.add_att( "experiment_code",experimentCode.c_str());
 	   ncFile.add_att( "conventions",conventions.c_str());
@@ -565,13 +571,16 @@ void IsrRadarFile::readRadarParams()
 	   ncFile.add_att( "distribution_statement",distributionStatement.c_str());
 	   ncFile.add_att("dough_nut", doughNut);
 	   NcDim *rangeDim, *timeDim, *collectionDim;
-	   rangeDim =ncFile.add_dim("range",numberOfRangeBins-doughNut);
-	   timeDim =ncFile.add_dim("time");
+	   rangeDim =ncFile.addDim("range",numberOfRangeBins-doughNut);
+	   timeDim =ncFile.addDim("time");
 
 	   int inpterpbins = 360.0/0.25;
-	   collectionDim =ncFile.add_dim("collection",inpterpbins);
+	   collectionDim =ncFile.addDim("collection",inpterpbins);
 
-	   rangeVar = ncFile.add_var("range",ncFloat,rangeDim);
+	   rangeVar = ncFile.addVar("range",NcVar:ncFloat,rangeDim);
+	   ncFile.
+	   ncFile.addVariableAttribute("range", "units", "m");
+	//   units = “days since 1970-01-01T00:00:00Z”
 	   timeVar = ncFile.add_var("time",ncFloat,timeDim);
 	   collectionVar = ncFile.add_var("collcection",ncInt,collectionDim);
 	  // magVar = ncFile.add_var("radar_magnitude",ncShort,timeDim,collectionDim,rangeDim);
@@ -633,7 +642,7 @@ void IsrRadarFile::readRadarParams()
  //  delete (collection);
    
 
-  
+  */
  
   }
 
@@ -641,6 +650,7 @@ void IsrRadarFile::readRadarParams()
   {
 	    ILuint texid;
 		ILboolean success;
+	   NcVar *northingVar ,*timeVar, *eastingVar, *magVar;
 
 	//  if (fileName==NULL)
 	//	  fileName = netCdfFileName.c_str();;
@@ -651,13 +661,13 @@ void IsrRadarFile::readRadarParams()
 		   frameCount =numberOfRotations-startFrame;
 	  int inpterpbins = 360.0/0.25;
 	  NcFile *ncFile = NULL;
-	  NcVar *northingVar, *timeVar, *eastingVar,*magVar;
 	  float *times = new float[frameCount];
 	  if (outputNcdf) {
 	   size_t t = 1024*1024;
 	   size_t total = 1024*102481024;
 	   ncFile = new NcFile(netCdfFileName.c_str(), NcFile::Replace,&t,total,NcFile::Netcdf4);
 		  /* assign global attributes */
+	   ncFile->add_att( "project",project.c_str());
 	   ncFile->add_att( "project",project.c_str());
 	   ncFile->add_att( "experiment",experiment.c_str());
 	   ncFile->add_att( "experiment_code",experimentCode.c_str());
@@ -679,18 +689,18 @@ void IsrRadarFile::readRadarParams()
 	   ncFile->add_att( "references",references.c_str());
 	   ncFile->add_att("netcdf_version", atof(netcdfVersion.c_str()));
 	   ncFile->add_att("site_code",siteCode.c_str());
-	   ncFile->add_att( "platform_code",platformCode.length(),platformCode.c_str());
-	   ncFile->add_att( "naming_authority",namingAuthority.length(),namingAuthority.c_str());
-	   ncFile->add_att( "file_version", fileVersion.length(),fileVersion.c_str());
-	   ncFile->add_att( "file_version_quality_control",fileVersionQualityControl.length(),fileVersionQualityControl.c_str());
-	   ncFile->add_att( "history",history.length(),history.c_str());
+	   ncFile->add_att( "platform_code",platformCode.c_str());
+	   ncFile->add_att( "naming_authority",namingAuthority.c_str());
+	   ncFile->add_att( "file_version",fileVersion.c_str());
+	   ncFile->add_att( "file_version_quality_control",fileVersionQualityControl.c_str());
+	   ncFile->add_att( "history",history.c_str());
 	   ncFile->add_att("geospatial_lat_min",atof(geospatialLatMin.c_str()));
 	   ncFile->add_att("geospatial_lat_max", atof(geospatialLatMax.c_str()));
 	   ncFile->add_att("geospatial_lon_min",atof(geospatialLonMin.c_str()));
 	   ncFile->add_att("geospatial_lon_max",atof(geospatialLonMax.c_str()));
 	   ncFile->add_att("geospatial_vertical_min",atof(geospatialVerticalMin.c_str()));
-	   ncFile->add_att("geospatial_vertical_max", atof(geospatialVerticalMax.c_str()));
-	   ncFile->add_att( "data_centre",dataCentre.length(),dataCentre.c_str());
+	   ncFile->add_att("geospatial_vertical_max",atof(geospatialVerticalMax.c_str()));
+	   ncFile->add_att( "data_centre",dataCentre.c_str());
 	   ncFile->add_att( "data_centre_email",dataCentreEmail.c_str());
 	   ncFile->add_att( "author_email",authorEmail.c_str());
 	   ncFile->add_att( "author",author.c_str());
@@ -701,18 +711,20 @@ void IsrRadarFile::readRadarParams()
 	   ncFile->add_att( "acknowledgement",acknowledgement.c_str());
 	   ncFile->add_att( "distribution_statement",distributionStatement.c_str());
 	   ncFile->add_att("dough_nut", doughNut);
-	   NcDim *northingDim, *timeDim, *eastingDim;
-	   northingDim =ncFile->add_dim("northing",ySize);
-	   timeDim =ncFile->add_dim("time");
-	   eastingDim =ncFile->add_dim("collection",xSize);
 	   
+	   NcDim *northingDim =ncFile->add_dim("northing",ySize);
+	   NcDim *eastingDim = ncFile->add_dim("easting",xSize);
+	   NcDim *timeDim = ncFile->add_dim("time",frameCount);
 
 	   northingVar = ncFile->add_var("northing",ncFloat,northingDim);
 	   timeVar = ncFile->add_var("time",ncFloat,timeDim);
+	   timeVar->add_att("units","days since 1970-01-01T00:00:00Z");
 	   eastingVar = ncFile->add_var("easting",ncFloat,eastingDim);
+
 
 	  // magVar = ncFile->add_var("radar_magnitude",ncShort,timeDim,collectionDim,rangeDim);
 	   magVar = ncFile->add_var("radar_magnitude",ncShort,timeDim,eastingDim,northingDim);
+	   
 	   // calculate the range bins
 	   float *northings = new float[ySize];
 	   // 
@@ -742,6 +754,7 @@ void IsrRadarFile::readRadarParams()
 		   times[i]= collectionTime[i*numberOfCollectionsPerRotation];
 
 	  }
+ 	  timeVar->put(times,frameCount);
 	  double *collectionTimes = new double[inpterpbins];
 	   zipperFound = false;
 	   GpuGrid gridder(numberOfCollectionsPerRotation,numberOfRangeBins-doughNut,0.25,xSize,ySize,(float)sampleRate,true);
@@ -765,10 +778,13 @@ void IsrRadarFile::readRadarParams()
 	   float * interpframe =gridder.interpolateCartFrame(frameBuffer,collectionAngle,xOffset,yOffset,gridSize,heading);
 	//   cout << "Grid :" << i;
 	   float *interpFramePointer =interpframe;
+	   for (int ci=0;ci<xSize*ySize;ci++)
+		   output[ci]=short(interpframe[ci]);
 	   if (interpframe!=NULL) {
 		   if (ncFile!=NULL) {
 			magVar->put_rec(output,i);
-			timeVar->put(&times[i],i);
+		//	timeVar->put(&times[i],i);
+
 		   }
 			if (summedImage)
 			  sumImageArray(meanImage,interpframe,xSize,ySize,frameCount);
@@ -780,8 +796,8 @@ void IsrRadarFile::readRadarParams()
       ncFile->add_att( "zipper_found",zipperFound);
       ncFile->add_att( "dough_nut_removed",(doughNut>0));
 	  cout << "close file\r\n";
-	  ncFile->close();
 	  cout << "delete ncFile\r\n";
+	  ncFile->close();
 	  delete (ncFile);
    }
    if (summedImage){
@@ -856,11 +872,12 @@ void IsrRadarFile::readRadarParams()
 		   int row = c / ySize;
 		   int col = (c - row *ySize)*pixelSize;
 		   row = (row * pixelSize);
+		   if ((ygrid>0) && (xgrid>0)){
 		   if ((row  % ygrid)<pixelSize)
 			   *meanp = 1-*meanp;
 		   if ((col % xgrid)<pixelSize)
 			   *meanp = 1-*meanp;
-
+		   }
 		   meanp++;
 	   }
    ilTexImage( ySize, xSize, 0, 1,IL_LUMINANCE,IL_FLOAT,meanImage);

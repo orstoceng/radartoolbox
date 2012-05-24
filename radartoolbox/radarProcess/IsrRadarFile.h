@@ -25,7 +25,7 @@
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
-#include <netcdfcpp.h>	
+
 
 
 #ifndef ISRRADARFILE_H
