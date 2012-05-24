@@ -10,12 +10,6 @@
     <ClCompile Include="IsrRadarFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\netcdf-4.1.3\cxx\ncvalues.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\netcdf-4.1.3\cxx\netcdf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="radarprocess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -28,6 +22,8 @@
     <ClCompile Include="tinyxmlerror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\netcdf-4.1.3\cxx\ncvalues.cpp" />
+    <ClCompile Include="..\netcdf-4.1.3\cxx\netcdf.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="anyoption.h">
@@ -60,6 +56,7 @@
     <ClInclude Include="config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\netcdf-4.1.3\cxx\netcdfcpp.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -73,5 +70,8 @@
     <CudaCompile Include="GpuGrid.cu">
       <Filter>Source Files</Filter>
     </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Debug\anyoption.obj" />
   </ItemGroup>
 </Project>

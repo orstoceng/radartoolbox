@@ -29,6 +29,8 @@
 #include <ctime>
 #include <sstream>
 #include <string>
+#include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
 
 
 #ifdef _DEBUG
@@ -39,8 +41,9 @@
 // The one and only application object
 
 using namespace std;
+using namespace boost::filesystem;
 
-void DisplayErrorBox(LPTSTR lpszFunction);
+void DisplayErrorBox(LPTSTR  lpszFunction);
 void MakeNetCdfFile(char *netCdfFileName, short sampleRate, short scans, short bins, short collectionsPerRotation, short rangeGate, short waveSums,TiXmlDocument metaXml);
 void MakeFileName(char *binFileName,char *metaFileName, TCHAR *netCdfFileName);
 void JulianDayToYearMonthDay( const long julianDay, int *year, int *month, int *day );
@@ -49,7 +52,6 @@ void readAzimuthFile(TCHAR *binFileName,int *azimuthCount,float *angle, float *t
 void SplitNameAndPathname( const char*  fullFileName, int length, char *fileName, char *path);
 void GetFileDateTimeStamp(char *fileName,SYSTEMTIME *stUTC,SYSTEMTIME *stLocal);
 void MakeNetCdfFileName(char *fileName,char *basePath,TiXmlDocument metaXml,SYSTEMTIME fileTime);
-
 
 int main(int argc, char *argv[])
 {
@@ -96,32 +98,35 @@ int main(int argc, char *argv[])
 	if (opt->getValue("file")!=NULL) {
 		// print the provided ISR binary file name
 		cout << "output:\n\rsourcefile:" << opt->getValue("file") <<"\n\r";
+		path x(opt->getValue("file"));
+		if (exists(x)){
+			// Create the IsrRadarFile object (calls the constructor).
+			// The file header is read in here
+			IsrRadarFile isr(opt->getValue("file"));
 
-		// Create the IsrRadarFile object (calls the constructor).
-		// The file header is read in here
-		IsrRadarFile isr(opt->getValue("file"));
+			// Rename the binary file, if the rename flag was set.
+			if (opt->getFlag( "rename" ) || opt->getFlag( 'r' )) {
+				// Use the year set in the year option, if provided.
+				if (opt->getValue("year")!=NULL)
+					isr.renameSource(atoi(opt->getValue("year")));
+				else
+					isr.renameSource(-1);
+			}
 
-		// Rename the binary file, if the rename flag was set.
-		if (opt->getFlag( "rename" ) || opt->getFlag( 'r' )) {
-			// Use the year set in the year option, if provided.
-			if (opt->getValue("year")!=NULL)
-				isr.renameSource(atoi(opt->getValue("year")));
-			else
-				isr.renameSource(-1);
-		}
-
-		// Main processing block
-		{
-			// print the filename and the start time of the capture
-			time_t t =  isr.getStartTime();
-			cout << "output_" << opt->getValue("file") <<" " << asctime(localtime( &t));
-			// Process the binary file
-			isr.processFile();
-		}
-
-		// If the zip flag is set, put the A*.txt and M*.bin files into a (not-compressed) ZIP file.
-		if (opt->getFlag( "zip" ) || opt->getFlag( 'z' )){
-			isr.zipfiles();
+			// Main processing block
+			{
+				// print the filename and the start time of the capture
+				time_t t =  isr.getStartTime();
+				cout << "output_" << opt->getValue("file") <<" " << asctime(localtime( &t));
+				// Process the binary file
+				isr.processFile();
+			}
+			// If the zip flag is set, put the A*.txt and M*.bin files into a (not-compressed) ZIP file.
+			if (opt->getFlag( "zip" ) || opt->getFlag( 'z' )){
+				isr.zipfiles();
+			}
+		} else { 
+			cout << "file not found!";
 		}
 
 	} else 
