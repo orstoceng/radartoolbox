@@ -75,29 +75,29 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\;..\boost_1_48_0;..\netcdf-4.1.3\include;c:\program files\nvidia gpu computing toolkit\cuda\v4.0\include;..\netcdf-4.1.3\cxx;..\CImg-1.4.9;..\tiff-3.9.5\libtiff;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\;$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.3\cxx;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\netcdf-4.1.1-win32-bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\;..\boost_1_48_0;..\netcdf-4.1.3\include;c:\program files\nvidia gpu computing toolkit\cuda\v4.0\include;..\netcdf-4.1.3\cxx;..\CImg-1.4.9;..\tiff-3.9.5\libtiff;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\;$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.3\cxx;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\netcdf-4.1.1-win32-bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\;..\boost_1_48_0;..\netcdf-4.1.3\include;c:\program files\nvidia gpu computing toolkit\cuda\v4.0\include;..\netcdf-4.1.3\cxx;..\CImg-1.4.9;..\tiff-3.9.5\libtiff;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\;$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.3\cxx;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\netcdf-4.1.1-win32-bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>.\;..\boost_1_48_0;..\netcdf-4.1.3\include;c:\program files\nvidia gpu computing toolkit\cuda\v4.0\include;..\netcdf-4.1.3\cxx;..\CImg-1.4.9;..\tiff-3.9.5\libtiff;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\;$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.3\cxx;..\DevIL-SDK-x86-1.7.8\include;$(IncludePath)</IncludePath>
     <LibraryPath>..\netcdf-4.1.1-win32-bin;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v4.0\include;..\boost_1_48_0;C:\Visual_Studio_Projects\radar_toolbox_svn\netcdf-4.1.3\include;C:\Nick'sdata\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <FunctionLevelLinking>
@@ -107,18 +107,34 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>cudart.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;netcdf.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DevIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\boost_1_48_0\stage\lib;..\netcdf-4.1.3\lib\x32;..\DevIL-SDK-x86-1.7.8\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\boost_1_48_0\stage\lib;..\netcdf-4.1.1-win32-bin;..\DevIL-SDK-x86-1.7.8\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
+copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+
+echo copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v4.0\include;C:\Program Files\MATLAB\R2011a\extern\include;..\boost_1_48_0;C:\Nick%27sdata\netcdf-4.1.2\include;C:\Nick'sdata\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -128,7 +144,23 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
+copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+
+echo copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,7 +169,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v4.0\include;C:\Program Files\MATLAB\R2011a\extern\include;..\boost_1_48_0;C:\Nick%27sdata\netcdf-4.1.2\include;C:\Nick'sdata\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -149,7 +181,23 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
+copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+
+echo copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +206,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v4.0\include;C:\Program Files\MATLAB\R2011a\extern\include;..\boost_1_48_0;C:\Nick%27sdata\netcdf-4.1.2\include;C:\Nick'sdata\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(CUDA_INC_PATH);..\boost_1_48_0;..\netcdf-4.1.3\include;..\netcdf-4.1.1\win32\NET;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -170,7 +218,23 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     </Link>
     <PostBuildEvent>
       <Command>echo copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
-copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
+copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\netcdf.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5_hldll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\hdf5dll.dll" "$(OutDir)"
+
+echo copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+copy "..\netcdf-4.1.1-win32-bin\szip.dll" "$(OutDir)"
+
+echo copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+copy "..\DevIL-SDK-x86-1.7.8\lib\DevIL.dll" "$(OutDir)"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -199,9 +263,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tinystr.h" />
     <ClInclude Include="tinyxml.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Debug\anyoption.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

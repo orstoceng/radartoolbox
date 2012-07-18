@@ -71,7 +71,4 @@
       <Filter>Source Files</Filter>
     </CudaCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="Debug\anyoption.obj" />
-  </ItemGroup>
 </Project>
