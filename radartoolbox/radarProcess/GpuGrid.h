@@ -18,7 +18,7 @@ class GpuGrid {
 	short*azimuthMask; //,*deviceAzimuthMask;
 	float *interplatedPolarFrame, *deviceFrameBuffer,*rawAngleBuffer,*deviceRawAngleBuffer, *rawFrameBuffer,*deviceAzimuth;
 	float *azimuthArray,rangeBinSize;
-	cudaArray *deviceAzimuthArray,*deviceRawFrameArray; 
+	cudaArray *deviceAzimuthArray,*deviceRawFrameArray;
 	int xOutputSize,yOutputSize,numberOfCollectionsPerRotation, numberOfRangeBins, numberOfAngleBins;
 	float angleStep;
 	bool gpuReady;
@@ -34,9 +34,15 @@ public:
 	void cpyAngles(float *source);
 	float *interpolatePolarFrame(float *sourceFrame,float *collectionAngles);
 	float *interpolateCartFrame(float *sourceFrame,float *collectionAngles,int xOffset, int yOffset, float gridSize, float heading);
-	bool isGpuReady() { return(gpuReady);};
-	float *getRawFrameBuffer() { return(rawFrameBuffer);};
-	float *getRawAngleBuffer() { return(rawAngleBuffer);};
+	bool isGpuReady() {
+		return(gpuReady);
+	};
+	float *getRawFrameBuffer() {
+		return(rawFrameBuffer);
+	};
+	float *getRawAngleBuffer() {
+		return(rawAngleBuffer);
+	};
 };
 
 #endif

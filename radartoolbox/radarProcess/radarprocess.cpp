@@ -5,7 +5,7 @@
 
 	Function:		Contains main()
 
-	Description:	main() processes the command-line arguments using the 
+	Description:	main() processes the command-line arguments using the
 					AnyOption class, renames the input files (M*.bin and A*.txt)
 					and then processes the files using the IsrRadarFile class.
 
@@ -18,8 +18,8 @@
 #include "IsrRadarFile.h"
 #include "GpuGrid.h"
 
-#include <windows.h> 
-#include <tchar.h> 
+#include <windows.h>
+#include <tchar.h>
 #include <stdio.h>
 #include <strsafe.h>
 #include <iostream>
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 {
 	//	Engine *Eg;
 	//	Eg = engOpen("\0");
-	
+
 	// We use AnyOption to set and read the command-line arguments.
 	AnyOption *opt = new AnyOption();
 	// set up useage/help with addUsage
@@ -79,9 +79,9 @@ int main(int argc, char *argv[])
 	opt->setFlag(  "help", 'h' );   // create a flag to show the help with both long (--help) and short (-h) forms
 	opt->setOption(  "year", 'y' ); // an option to set the year, supporting long and short form
 	opt->setOption(  "meta",'m' );  // an option to provide the metadata file, supporting long and short form
-	opt->setOption(  "nav",'n' );   /* an option to provide the navigation file, 
+	opt->setOption(  "nav",'n' );   /* an option to provide the navigation file,
 									supporting long and short form (currently unused) */
-	opt->setFlag(  "rename",'r' );  /* a flag that, if set, causes the ISR files (A*.txt, M*.bin) to 
+	opt->setFlag(  "rename",'r' );  /* a flag that, if set, causes the ISR files (A*.txt, M*.bin) to
 									be renamed to a date-based name. Long and short forms */
 	opt->setFlag(  "zip",'z' );     // a flag to cause the files to be sipped into a single file.
 	opt->setOption(  "file"  );     // option to provide the ISR binary file name. Long form only.
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 		// print the provided ISR binary file name
 		cout << "output:\n\rsourcefile:" << opt->getValue("file") <<"\n\r";
 		path x(opt->getValue("file"));
-		if (exists(x)){
+		if (exists(x)) {
 			// Create the IsrRadarFile object (calls the constructor).
 			// The file header is read in here
 			IsrRadarFile isr(opt->getValue("file"));
@@ -108,9 +108,9 @@ int main(int argc, char *argv[])
 			if (opt->getFlag( "rename" ) || opt->getFlag( 'r' )) {
 				// Use the year set in the year option, if provided.
 				if (opt->getValue("year")!=NULL)
-				isr.renameSource(atoi(opt->getValue("year")));
+					isr.renameSource(atoi(opt->getValue("year")));
 				else
-				isr.renameSource(-1);
+					isr.renameSource(-1);
 			}
 
 			// Main processing block
@@ -122,15 +122,15 @@ int main(int argc, char *argv[])
 				isr.processFile();
 			}
 			// If the zip flag is set, put the A*.txt and M*.bin files into a (not-compressed) ZIP file.
-			if (opt->getFlag( "zip" ) || opt->getFlag( 'z' )){
+			if (opt->getFlag( "zip" ) || opt->getFlag( 'z' )) {
 				isr.zipfiles();
 			}
-		} else { 
+		} else {
 			cout << "file not found!";
 		}
 
-	} else 
-	cout << "need --file filename!";
+	} else
+		cout << "need --file filename!";
 
 
 
@@ -143,33 +143,33 @@ int main(int argc, char *argv[])
 
 // NB - I don't think any of the functions listed in the remainder of this file (below) are ever used. They appear to be legacy code. - R. Pittman
 
-void DisplayErrorBox(LPTSTR lpszFunction) 
-{ 
+void DisplayErrorBox(LPTSTR lpszFunction)
+{
 	// Retrieve the system error message for the last-error code
 
 	LPVOID lpMsgBuf;
 	LPVOID lpDisplayBuf;
-	DWORD dw = GetLastError(); 
+	DWORD dw = GetLastError();
 
 	FormatMessage(
-	FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-	FORMAT_MESSAGE_FROM_SYSTEM |
-	FORMAT_MESSAGE_IGNORE_INSERTS,
-	NULL,
-	dw,
-	MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-	(LPTSTR) &lpMsgBuf,
-	0, NULL );
+	    FORMAT_MESSAGE_ALLOCATE_BUFFER |
+	    FORMAT_MESSAGE_FROM_SYSTEM |
+	    FORMAT_MESSAGE_IGNORE_INSERTS,
+	    NULL,
+	    dw,
+	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+	    (LPTSTR) &lpMsgBuf,
+	    0, NULL );
 
 	// Display the error message and clean up
 
-	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
-	(lstrlen((LPCTSTR)lpMsgBuf)+lstrlen((LPCTSTR)lpszFunction)+40)*sizeof(TCHAR)); 
-	StringCchPrintf((LPTSTR)lpDisplayBuf, 
-	LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-	TEXT("%s failed with error %d: %s"), 
-	lpszFunction, dw, lpMsgBuf); 
-	MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK); 
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+	                                  (lstrlen((LPCTSTR)lpMsgBuf)+lstrlen((LPCTSTR)lpszFunction)+40)*sizeof(TCHAR));
+	StringCchPrintf((LPTSTR)lpDisplayBuf,
+	                LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+	                TEXT("%s failed with error %d: %s"),
+	                lpszFunction, dw, lpMsgBuf);
+	MessageBox(NULL, (LPCTSTR)lpDisplayBuf, TEXT("Error"), MB_OK);
 
 	LocalFree(lpMsgBuf);
 	LocalFree(lpDisplayBuf);
@@ -178,7 +178,7 @@ void DisplayErrorBox(LPTSTR lpszFunction)
 void GetFileDateTimeStamp(char *fileName,SYSTEMTIME *stUTC,SYSTEMTIME *stLocal)
 {
 	HANDLE hfile = CreateFile(fileName, GENERIC_READ, FILE_SHARE_READ, NULL,
-	OPEN_EXISTING, 0, NULL);
+	                          OPEN_EXISTING, 0, NULL);
 	FILETIME ftCreate,ftAccess,ftWrite;
 	GetFileTime(hfile, &ftCreate, &ftAccess, &ftWrite);
 	FileTimeToSystemTime(&ftWrite, stUTC);
@@ -223,7 +223,7 @@ int dump_attribs_to_stdout(TiXmlElement* pElement, unsigned int indent)
 		i++;
 		pAttrib=pAttrib->Next();
 	}
-	return i;	
+	return i;
 }
 // Make up net cdf file name
 void MakeNetCdfFileName(char *fileName,char *basePath,TiXmlDocument metaXml,SYSTEMTIME fileTime)
@@ -234,7 +234,7 @@ void MakeNetCdfFileName(char *fileName,char *basePath,TiXmlDocument metaXml,SYST
 	const char * deploymentCode = root->FirstChild("deployment_code")->FirstChild()->Value();
 	//		sprintf(fileName,"%s%s_%s-%s_RADAR_%04u-%02u-%02u_%02u:%02u.nc",basePath,projectCode,experimentCode,deploymentCode,fileTime.wYear,
 	//						fileTime.wMonth,fileTime.wDay,fileTime.wHour,fileTime.wMinute);
-	
+
 	//		sprintf(fileName,"%s%s_%s-%s_RADAR",basePath,projectCode,experimentCode,deploymentCode);
 
 }
@@ -426,226 +426,226 @@ void MakeNetCdfFile(char *netCdfFileName, short sampleRate, short scans, short b
 	check_err(stat,__LINE__,__FILE__);
 
 	/* assign global attributes */
-	{ /* project */
+	{	/* project */
 		value =root->FirstChild("project")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "project", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* experiment */
+	{	/* experiment */
 		value =root->FirstChild("experiment")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "experiment", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* experiment_code */
+	{	/* experiment_code */
 		value =root->FirstChild("experiment_code")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "experiment_code",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* conventions */
+	{	/* conventions */
 		value =root->FirstChild("conventions")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "conventions",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* title */
+	{	/* title */
 		value =root->FirstChild("title")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "title", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* institution */
+	{	/* institution */
 		value =root->FirstChild("institution")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "institution",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* date_created */
+	{	/* date_created */
 		value =root->FirstChild("date_created")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "date_created", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* date_modified */
+	{	/* date_modified */
 		value =root->FirstChild("date_modified")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "date_modified",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* abstract */
+	{	/* abstract */
 		value =root->FirstChild("abstract")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "abstract", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* comment */
+	{	/* comment */
 		value =root->FirstChild("comment")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "comment",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* radar_model */
+	{	/* radar_model */
 		value =root->FirstChild("radar")->FirstChild("model")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "radar_model", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* radar_transmit_pulse_width */
+	{	/* radar_transmit_pulse_width */
 		value =root->FirstChild("radar")->FirstChild("transmit_pulse_width")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "radar_transmit_pulse_width",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* radar_pulse_repetition_Frequency */
+	{	/* radar_pulse_repetition_Frequency */
 		value =root->FirstChild("radar")->FirstChild("pulse_repetition_Frequency")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "radar_pulse_repetition_Frequency", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* radar_antenna_type */
+	{	/* radar_antenna_type */
 		value =root->FirstChild("radar")->FirstChild("antenna")->FirstChild("type")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "radar_antenna_type",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* radar_antenna_horizontal_beam_width */
+	{	/* radar_antenna_horizontal_beam_width */
 		value =root->FirstChild("radar")->FirstChild("antenna")->FirstChild("horizontal_beam_width")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "radar_antenna_horizontal_beam_width",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* radar_antenna_vertical_beam_width */
+	{	/* radar_antenna_vertical_beam_width */
 		value =root->FirstChild("radar")->FirstChild("antenna")->FirstChild("vertical_beam_width")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "radar_antenna_vertical_beam_width", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* radar_rotation_speed */
+	{	/* radar_rotation_speed */
 		value =root->FirstChild("radar")->FirstChild("rotation_speed")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "radar_rotation_speed", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* keywords */
+	{	/* keywords */
 		value =root->FirstChild("keywords")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "keywords", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* references */
+	{	/* references */
 		value =root->FirstChild("references")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "references",  strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* netcdf_version */
+	{	/* netcdf_version */
 		value =root->FirstChild("netcdf_version")->FirstChild()->Value();
 		double netcdf_version_att[1] ;
 		sscanf(value, "%lf", &netcdf_version_att);
 		stat = nc_put_att_double(ncid, NC_GLOBAL, "netcdf_version", NC_DOUBLE, 1, netcdf_version_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* site_code */
+	{	/* site_code */
 		value =root->FirstChild("site_code")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "site_code",   strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* platform_code */
+	{	/* platform_code */
 		value =root->FirstChild("platform_code")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "platform_code",  strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* naming_authority */
+	{	/* naming_authority */
 		value =root->FirstChild("naming_authority")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "naming_authority", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* file_version */
+	{	/* file_version */
 		value =root->FirstChild("file_version")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "file_version", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* file_version_quality_control */
+	{	/* file_version_quality_control */
 		value =root->FirstChild("file_version_quality_control")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "file_version_quality_control",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* history */
+	{	/* history */
 		value =root->FirstChild("history")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "history", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* geospatial_lat_min */
+	{	/* geospatial_lat_min */
 		value =root->FirstChild("geospatial_lat_min")->FirstChild()->Value();
 		double geospatial_lat_min_att[1];
 		sscanf(value, "%lf", &geospatial_lat_min_att);
 		stat = nc_put_att_double(ncid, NC_GLOBAL, "geospatial_lat_min", NC_DOUBLE, 1, geospatial_lat_min_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* geospatial_lat_max */
+	{	/* geospatial_lat_max */
 		value =root->FirstChild("geospatial_lat_max")->FirstChild()->Value();
 		double geospatial_lat_max_att[1] ;
 		sscanf(value, "%lf", &geospatial_lat_max_att);
 		stat = nc_put_att_double(ncid, NC_GLOBAL, "geospatial_lat_max", NC_DOUBLE, 1, geospatial_lat_max_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* geospatial_lon_min */
+	{	/* geospatial_lon_min */
 		value =root->FirstChild("geospatial_lon_min")->FirstChild()->Value();
 		double geospatial_lon_min_att[1];
 		sscanf(value, "%lf", &geospatial_lon_min_att);
 		stat = nc_put_att_double(ncid, NC_GLOBAL, "geospatial_lon_min", NC_DOUBLE, 1, geospatial_lon_min_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* geospatial_lon_max */
+	{	/* geospatial_lon_max */
 		value =root->FirstChild("geospatial_lon_max")->FirstChild()->Value();
 		double geospatial_lon_max_att[1] ;
 		sscanf(value, "%lf", &geospatial_lon_max_att);
 		stat = nc_put_att_double(ncid, NC_GLOBAL, "geospatial_lon_max", NC_DOUBLE, 1, geospatial_lon_max_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* geospatial_vertical_min */
+	{	/* geospatial_vertical_min */
 		value =root->FirstChild("geospatial_vertical_min")->FirstChild()->Value();
 		double geospatial_vertical_min_att[1];
 		sscanf(value, "%lf", &geospatial_vertical_min_att);
 		stat = nc_put_att_double(ncid, NC_GLOBAL, "geospatial_vertical_min", NC_DOUBLE, 1, geospatial_vertical_min_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* geospatial_vertical_max */
+	{	/* geospatial_vertical_max */
 		value =root->FirstChild("geospatial_vertical_max")->FirstChild()->Value();
 		double geospatial_vertical_max_att[1] ;
 		sscanf(value, "%lf", &geospatial_vertical_max_att);
 		stat = nc_put_att_double(ncid, NC_GLOBAL, "geospatial_vertical_max", NC_DOUBLE, 1, geospatial_vertical_max_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* data_centre */
+	{	/* data_centre */
 		value =root->FirstChild("data_centre")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "data_centre", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* data_centre_email */
+	{	/* data_centre_email */
 		value =root->FirstChild("data_centre_email")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "data_centre_email",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* author_email */
+	{	/* author_email */
 		value =root->FirstChild("author_email")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "author_email", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* author */
+	{	/* author */
 		value =root->FirstChild("author")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "author",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* principal_investigator */
+	{	/* principal_investigator */
 		value =root->FirstChild("principal_investigator")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "principal_investigator",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* principal_investigator_email */
+	{	/* principal_investigator_email */
 		value =root->FirstChild("principal_investigator_email")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "principal_investigator_email", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* institution_references */
+	{	/* institution_references */
 		value =root->FirstChild("institution_references")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "institution_references", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* citation */
+	{	/* citation */
 		value =root->FirstChild("citation")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "citation", strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* acknowledgement */
+	{	/* acknowledgement */
 		value =root->FirstChild("acknowledgement")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "acknowledgement",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* distribution_statement */
+	{	/* distribution_statement */
 		value =root->FirstChild("distribution_statement")->FirstChild()->Value();
 		stat = nc_put_att_text(ncid, NC_GLOBAL, "distribution_statement",strlen(value),value);
 		check_err(stat,__LINE__,__FILE__);
@@ -653,291 +653,291 @@ void MakeNetCdfFile(char *netCdfFileName, short sampleRate, short scans, short b
 
 
 	/* assign per-variable attributes */
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, lat_id, "long_name", 8, "latitude");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, lat_id, "units", 13, "degrees_north");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* axis */
+	{	/* axis */
 		stat = nc_put_att_text(ncid, lat_id, "axis", 1, "Y");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* standard_name */
+	{	/* standard_name */
 		stat = nc_put_att_text(ncid, lat_id, "standard_name", 8, "latitude");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float lat_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, lat_id, "missing_value", NC_FLOAT, 1, lat_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* valid_range */
+	{	/* valid_range */
 		static const float lat_valid_range_att[2] = {-90, 90} ;
 		stat = nc_put_att_float(ncid, lat_id, "valid_range", NC_FLOAT, 2, lat_valid_range_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, lon_id, "long_name", 9, "longitude");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, lon_id, "units", 12, "degrees_east");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* axis */
+	{	/* axis */
 		stat = nc_put_att_text(ncid, lon_id, "axis", 1, "X");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float lon_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, lon_id, "missing_value", NC_FLOAT, 1, lon_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* valid_range */
+	{	/* valid_range */
 		static const float lon_valid_range_att[2] = {-360, 360} ;
 		stat = nc_put_att_float(ncid, lon_id, "valid_range", NC_FLOAT, 2, lon_valid_range_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, lon_id, "long_name", 15, "Radar elevation");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, lon_id, "units", 1, "m");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* datum */
+	{	/* datum */
 		stat = nc_put_att_text(ncid, lon_id, "datum", 22, "mean sea level (AHD94)");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* axis */
+	{	/* axis */
 		stat = nc_put_att_text(ncid, lon_id, "axis", 1, "Z");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* standard_name */
+	{	/* standard_name */
 		stat = nc_put_att_text(ncid, lon_id, "standard_name", 9, "longitude");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, altitude_id, "long_name", 42, "Altitude in meters (asl) of the instrument");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, altitude_id, "units", 6, "meters");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* valid_range */
+	{	/* valid_range */
 		static const float altitude_valid_range_att[2] = {-10000, 90000} ;
 		stat = nc_put_att_float(ncid, altitude_id, "valid_range", NC_FLOAT, 2, altitude_valid_range_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float altitude_missing_value_att[1] = {-99999} ;
 		stat = nc_put_att_float(ncid, altitude_id, "missing_value", NC_FLOAT, 1, altitude_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* _FillValue */
+	{	/* _FillValue */
 		static const double altitude_FillValue_att[1] = {-88888} ;
 		stat = nc_put_att_double(ncid, altitude_id, "_FillValue", NC_DOUBLE, 1, altitude_FillValue_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, heading_id, "long_name", 7, "heading");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, heading_id, "units", 13, "degrees_north");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* standard_name */
+	{	/* standard_name */
 		stat = nc_put_att_text(ncid, navtime_id, "standard_name", 4, "time");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* axis */
+	{	/* axis */
 		stat = nc_put_att_text(ncid, navtime_id, "axis", 1, "T");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, navtime_id, "units", 19, "days since 1970-1-1");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, navtime_id, "long_name", 15, "navigation time");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* standard_name */
+	{	/* standard_name */
 		stat = nc_put_att_text(ncid, time_id, "standard_name", 4, "time");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* axis */
+	{	/* axis */
 		stat = nc_put_att_text(ncid, time_id, "axis", 1, "T");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, time_id, "units", 19, "days since 1970-1-1");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, time_id, "long_name", 4, "time");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* standard_name */
+	{	/* standard_name */
 		stat = nc_put_att_text(ncid, azimuth_id, "standard_name", 7, "azimuth");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, azimuth_id, "units", 17, "degrees_clockwise");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, azimuth_id, "long_name", 13, "radar azimuth");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* comment */
+	{	/* comment */
 		stat = nc_put_att_text(ncid, azimuth_id, "comment", 57, "Degrees are measured clockwise from the radar start pulse");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* standard_name */
+	{	/* standard_name */
 		stat = nc_put_att_text(ncid, range_id, "standard_name", 5, "range");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, range_id, "units", 6, "meters");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, range_id, "long_name", 5, "range");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float range_missing_value_att[1] = {-99999} ;
 		stat = nc_put_att_float(ncid, range_id, "missing_value", NC_FLOAT, 1, range_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, ant_gain_id, "long_name", 12, "Antenna Gain");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, ant_gain_id, "units", 2, "db");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float ant_gain_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, ant_gain_id, "missing_value", NC_FLOAT, 1, ant_gain_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* _FillValue */
+	{	/* _FillValue */
 		static const float ant_gain_FillValue_att[1] = {-888} ;
 		stat = nc_put_att_float(ncid, ant_gain_id, "_FillValue", NC_FLOAT, 1, ant_gain_FillValue_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, bm_width_id, "long_name", 10, "Beam Width");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, bm_width_id, "units", 7, "degrees");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float bm_width_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, bm_width_id, "missing_value", NC_FLOAT, 1, bm_width_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* _FillValue */
+	{	/* _FillValue */
 		static const float bm_width_FillValue_att[1] = {-888} ;
 		stat = nc_put_att_float(ncid, bm_width_id, "_FillValue", NC_FLOAT, 1, bm_width_FillValue_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, pulse_width_id, "long_name", 11, "Pulse Width");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, pulse_width_id, "units", 12, "nano_seconds");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float pulse_width_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, pulse_width_id, "missing_value", NC_FLOAT, 1, pulse_width_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* _FillValue */
+	{	/* _FillValue */
 		static const float pulse_width_FillValue_att[1] = {-888} ;
 		stat = nc_put_att_float(ncid, pulse_width_id, "_FillValue", NC_FLOAT, 1, pulse_width_FillValue_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, pulse_rep_freq_id, "long_name", 24, "Pulse Repation Frequency");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, pulse_rep_freq_id, "units", 5, "Hertz");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float pulse_rep_freq_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, pulse_rep_freq_id, "missing_value", NC_FLOAT, 1, pulse_rep_freq_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* _FillValue */
+	{	/* _FillValue */
 		static const float pulse_rep_freq_FillValue_att[1] = {-888} ;
 		stat = nc_put_att_float(ncid, pulse_rep_freq_id, "_FillValue", NC_FLOAT, 1, pulse_rep_freq_FillValue_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, peak_pwr_id, "long_name", 10, "Peak Power");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, peak_pwr_id, "units", 5, "watts");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float peak_pwr_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, peak_pwr_id, "missing_value", NC_FLOAT, 1, peak_pwr_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* _FillValue */
+	{	/* _FillValue */
 		static const float peak_pwr_FillValue_att[1] = {-888} ;
 		stat = nc_put_att_float(ncid, peak_pwr_id, "_FillValue", NC_FLOAT, 1, peak_pwr_FillValue_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, sample_rate_id, "long_name", 11, "Sample Rate");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* units */
+	{	/* units */
 		stat = nc_put_att_text(ncid, sample_rate_id, "units", 5, "Hertz");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float sample_rate_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, sample_rate_id, "missing_value", NC_FLOAT, 1, sample_rate_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, number_of_rotations_id, "long_name", 27, "Number of Antenna Rotations");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* missing_value */
+	{	/* missing_value */
 		static const float number_of_rotations_missing_value_att[1] = {-999} ;
 		stat = nc_put_att_float(ncid, number_of_rotations_id, "missing_value", NC_FLOAT, 1, number_of_rotations_missing_value_att);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, number_of_bins_id, "long_name", 20, "Number of Range Bins");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, number_of_collects_id, "long_name", 34, "Number of collections per rotation");
 		check_err(stat,__LINE__,__FILE__);
 	}
-	{ /* long_name */
+	{	/* long_name */
 		stat = nc_put_att_text(ncid, number_of_wave_sums_id, "long_name", 34, "Number of wave sums per collection");
 		check_err(stat,__LINE__,__FILE__);
 	}
@@ -984,7 +984,7 @@ void MakeNetCdfFile(char *netCdfFileName, short sampleRate, short scans, short b
 		stat = nc_put_vara(ncid, peak_pwr_id, peak_pwr_startset, peak_pwr_countset, peak_pwr_data);
 		check_err(stat,__LINE__,__FILE__);
 	}
-	
+
 	{
 		float bm_width_data[1] = {0.80} ;
 		size_t bm_width_startset[1] = {0} ;
@@ -1004,11 +1004,11 @@ void MakeNetCdfFile(char *netCdfFileName, short sampleRate, short scans, short b
 long YearMonthDayToJulianDay( const long year, const long month, const long day )
 {
 	long julianDay;
-	
+
 	julianDay = day - 32075L +
-	1461L * ( year + 4800L + ( month - 14L ) / 12L ) / 4L +
-	367L * ( month - 2L - ( month - 14L ) / 12L * 12L ) / 12L -
-	3L * ( ( year + 4900L + ( month - 14L ) / 12L ) / 100L ) / 4L;
+	            1461L * ( year + 4800L + ( month - 14L ) / 12L ) / 4L +
+	            367L * ( month - 2L - ( month - 14L ) / 12L * 12L ) / 12L -
+	            3L * ( ( year + 4900L + ( month - 14L ) / 12L ) / 100L ) / 4L;
 	return julianDay;
 }
 
@@ -1045,13 +1045,13 @@ void SplitNameAndPathname( const char*  fullFileName, int length, char *fileName
 {
 	int  lastSlash;
 
-	for (int i=0;i<length;i++)
-	if (fullFileName[i]=='\\')
-	lastSlash =i+1;
-	for (int i=0;i<lastSlash;i++)
-	path[i]=fullFileName[i];
+	for (int i=0; i<length; i++)
+		if (fullFileName[i]=='\\')
+			lastSlash =i+1;
+	for (int i=0; i<lastSlash; i++)
+		path[i]=fullFileName[i];
 	path[lastSlash]='\0';
-	for (int i=lastSlash;i<length;i++)
-	*fileName++ = fullFileName[i];
+	for (int i=lastSlash; i<length; i++)
+		*fileName++ = fullFileName[i];
 	*fileName = '\0';
 }

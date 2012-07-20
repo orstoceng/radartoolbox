@@ -19,25 +19,25 @@ texture<float, cudaTextureType1D,  cudaReadModeElementType> texRefAzimuth;
 
 
 
-__global__ void interpPolerKernel(float* output, int width, int height,short *azimuthMask) 
-{ // Calculate normalized texture coordinates 
+__global__ void interpPolerKernel(float* output, int width, int height,short *azimuthMask)
+{	// Calculate normalized texture coordinates
 	unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
-	unsigned int y = blockIdx.y * blockDim.y + threadIdx.y; 
+	unsigned int y = blockIdx.y * blockDim.y + threadIdx.y;
 	if ((y<width) && (x<height)) {
 		float angle = tex1D(texRefAzimuth, ((float)x));
 		//tex2D(texRefPolar, ((float)y),angle);tex2D(texRefPolar, ((float)y),angle) *
-		output[x * width + y] = tex2D(texRefPolar, ((float)y),angle)*((float) azimuthMask[x]); //(float)x;//tex2D(texRef, tu, tv); 
+		output[x * width + y] = tex2D(texRefPolar, ((float)y),angle)*((float) azimuthMask[x]); //(float)x;//tex2D(texRef, tu, tv);
 	}
 	//	output[y*width + x] = tex2D(texRefPolar, (float)x, (float)y) ;
 }
 
-__global__ void interpCartKernel(float* output, int width, int height, float antennaHieght,int xOffset,int yOffset, float heading, float gridSize, float rangeBinSize, float angleStepInRadians,float maxrange,bool tvg, int maxAzimuthBin) 
-{ // Calculate normalized texture coordinates 
+__global__ void interpCartKernel(float* output, int width, int height, float antennaHieght,int xOffset,int yOffset, float heading, float gridSize, float rangeBinSize, float angleStepInRadians,float maxrange,bool tvg, int maxAzimuthBin)
+{	// Calculate normalized texture coordinates
 	unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
-	unsigned int idy = blockIdx.y * blockDim.y + threadIdx.y; 
+	unsigned int idy = blockIdx.y * blockDim.y + threadIdx.y;
 	if ((idy>0) && (idy<width) && (idx<height) && (idx>0)) {
 		float xdistance = (xOffset-((float)height-(float)idx))*gridSize;
-		float ydistance =(yOffset-(float)idy)*gridSize;		
+		float ydistance =(yOffset-(float)idy)*gridSize;
 		float azimuth =atan2(ydistance,xdistance)-heading;
 		azimuth =2*PI-(azimuth + ((azimuth<0)*PI*2)); // convert to continous positive
 		azimuth = (azimuth>2*PI)*(azimuth-2*PI) + (azimuth<2*PI)*(azimuth);
@@ -45,25 +45,25 @@ __global__ void interpCartKernel(float* output, int width, int height, float ant
 		float azimuth1D= tex1D(texRefAzimuth, (azimuth)); // interp the bin
 		float range = sqrt((xdistance*xdistance)+(ydistance*ydistance));
 		range = sqrt((antennaHieght*antennaHieght)+(range*range))/rangeBinSize; // allow for the height of the antenna
-		output[((height-1)*(width))-(idx * width) + idy] = tex2D(texRefPolar, range,azimuth1D)*10 * (float)(range<maxrange) * (float) (azimuth<maxAzimuthBin); //* ((float)(tvg)*range*rangeBinSize/1000); //(float)x;//tex2D(texRef, tu, tv); 
+		output[((height-1)*(width))-(idx * width) + idy] = tex2D(texRefPolar, range,azimuth1D)*10 * (float)(range<maxrange) * (float) (azimuth<maxAzimuthBin); //* ((float)(tvg)*range*rangeBinSize/1000); //(float)x;//tex2D(texRef, tu, tv);
 
 	}
 }
 
-__global__ void gpuinterpolateAngles(float *output, float *frameAngle, int numberOfAngleBins, float angleStep) 
+__global__ void gpuinterpolateAngles(float *output, float *frameAngle, int numberOfAngleBins, float angleStep)
 {
 	unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	if (idx<360/angleStep) // initate the output
-	output[idx]=-9999;
+		output[idx]=-9999;
 	int startbin = 1;
 	if (idx==0)
-	output[0] =0;
+		output[0] =0;
 	else if (idx<numberOfAngleBins) {
 		float x0 =frameAngle[idx-1];
 		float x1 = frameAngle[idx];
 		int startbin =(x0/angleStep)+1;
 		int endbin =	(x1/angleStep);
-		for (int i=startbin;i<=endbin;i++){
+		for (int i=startbin; i<=endbin; i++) {
 			float x = (float)i*angleStep;
 			output[i] = idx-1 +(x-x0)*((1)/(x1-x0));
 		}
@@ -73,7 +73,7 @@ __global__ void gpuinterpolateAngles(float *output, float *frameAngle, int numbe
 
 
 
-GpuGrid::GpuGrid(int collections, int rangeBins, float step,int xSize,int ySize,float sampleRate, bool applyTvg) 
+GpuGrid::GpuGrid(int collections, int rangeBins, float step,int xSize,int ySize,float sampleRate, bool applyTvg)
 {
 	numberOfCollectionsPerRotation =collections;
 	numberOfRangeBins =rangeBins;
@@ -116,7 +116,7 @@ GpuGrid::~GpuGrid()
 	cudaFree(deviceRawAngleBuffer);
 	cudaFree(deviceFrameBuffer);
 	cudaFree(deviceAzimuth);
-	
+
 
 	// Free Cuda arrays
 	cudaFreeArray(deviceRawFrameArray);
@@ -129,7 +129,7 @@ void GpuGrid::cpyFrame(short *source)
 	// memcpy(rawFrameBuffer,source,numberOfCollectionsPerRotation*numberOfRangeBins*sizeof(short));
 }
 
-void GpuGrid::cpyAngles(float *source){
+void GpuGrid::cpyAngles(float *source) {
 	// memcpy(rawAngleBuffer,source,numberOfCollectionsPerRotation*sizeof(float));
 }
 
@@ -154,7 +154,7 @@ void GpuGrid::interpolateAngles(float *frameAngle)
 	}
 
 	//   cudaPrintfInit(); */
-	dim3 dimBlock(32, 1);  
+	dim3 dimBlock(32, 1);
 	dim3 dimGrid((numberOfCollectionsPerRotation + dimBlock.x - 1) / dimBlock.x,1);
 	maxAngleBin = rawAngleBuffer[numberOfCollectionsPerRotation-1]/angleStep;
 	cudaMemcpy(deviceRawAngleBuffer,rawAngleBuffer, numberOfCollectionsPerRotation *sizeof(float), cudaMemcpyHostToDevice);
@@ -176,23 +176,23 @@ float *GpuGrid::interpolatePolarFrame(float *sourceFrame,float *collectionAngles
 		cudaMemcpyToArray(deviceRawFrameArray, 0, 0, sourceFrame, numberOfCollectionsPerRotation*numberOfRangeBins*sizeof(float), cudaMemcpyHostToDevice);
 		//cudaMemcpyToArray(deviceAzimuthArray, 0, 0, azimuthArray,numberOfAngleBins *sizeof(float), cudaMemcpyHostToDevice);
 		//   cudaMemcpy(deviceAzimuthMask, azimuthMask, numberOfAngleBins*sizeof(short), cudaMemcpyHostToDevice);
-		// Set texture parameters 
-		texRefPolar.addressMode[0] = cudaAddressModeClamp; 
-		texRefPolar.addressMode[1] = cudaAddressModeClamp; 
-		texRefPolar.filterMode = cudaFilterModeLinear; 
+		// Set texture parameters
+		texRefPolar.addressMode[0] = cudaAddressModeClamp;
+		texRefPolar.addressMode[1] = cudaAddressModeClamp;
+		texRefPolar.filterMode = cudaFilterModeLinear;
 		texRefPolar.normalized = false;
 		cudaBindTextureToArray(&texRefPolar, deviceRawFrameArray,&channelDescPolar);
 
 		//Set texture parameters Azimuth
-		texRefAzimuth.addressMode[0] = cudaAddressModeClamp; 
-		texRefAzimuth.addressMode[1] = cudaAddressModeClamp; 
-		texRefAzimuth.filterMode = cudaFilterModeLinear; 
+		texRefAzimuth.addressMode[0] = cudaAddressModeClamp;
+		texRefAzimuth.addressMode[1] = cudaAddressModeClamp;
+		texRefAzimuth.filterMode = cudaFilterModeLinear;
 		texRefAzimuth.normalized = false;
 		cudaBindTextureToArray(&texRefAzimuth, deviceAzimuthArray,&channelDescAzimuth);
 
 
-		dim3 dimBlock(4, 4); 
-		dim3 dimGrid((numberOfAngleBins + dimBlock.x - 1) / dimBlock.x, (numberOfRangeBins + dimBlock.y - 1) / dimBlock.y); 
+		dim3 dimBlock(4, 4);
+		dim3 dimGrid((numberOfAngleBins + dimBlock.x - 1) / dimBlock.x, (numberOfRangeBins + dimBlock.y - 1) / dimBlock.y);
 		//	interpPolerKernel<<<dimGrid, dimBlock>>>(deviceFrameBuffer, numberOfRangeBins,numberOfAngleBins,deviceAzimuthMask,tvg,maxAngleBin);
 		//	cudaMemcpy(interplatedPolarFrame, deviceFrameBuffer, numberOfAngleBins*numberOfRangeBins*sizeof(float), cudaMemcpyDeviceToHost);
 		cudaUnbindTexture( texRefPolar );
@@ -212,34 +212,34 @@ float *GpuGrid::interpolateCartFrame(float *sourceFrame,float *collectionAngles,
 		cudaMemcpyToArray(deviceRawFrameArray, 0, 0, sourceFrame, numberOfCollectionsPerRotation*numberOfRangeBins*sizeof(float), cudaMemcpyHostToDevice);
 		cudaMemcpyToArray(deviceAzimuthArray, 0, 0, deviceAzimuth,numberOfAngleBins *sizeof(float), cudaMemcpyDeviceToDevice);
 
-		// Set texture parameters 
-		texRefPolar.addressMode[0] = cudaAddressModeClamp; 
-		texRefPolar.addressMode[1] = cudaAddressModeClamp; 
-		texRefPolar.filterMode = cudaFilterModeLinear; 
+		// Set texture parameters
+		texRefPolar.addressMode[0] = cudaAddressModeClamp;
+		texRefPolar.addressMode[1] = cudaAddressModeClamp;
+		texRefPolar.filterMode = cudaFilterModeLinear;
 		texRefPolar.normalized = false;
 		cudaBindTextureToArray(&texRefPolar, deviceRawFrameArray,&channelDescPolar);
 
 		//Set texture parameters Azimuth
-		texRefAzimuth.addressMode[0] = cudaAddressModeClamp; 
-		texRefAzimuth.addressMode[1] = cudaAddressModeClamp; 
-		texRefAzimuth.filterMode = cudaFilterModeLinear; 
+		texRefAzimuth.addressMode[0] = cudaAddressModeClamp;
+		texRefAzimuth.addressMode[1] = cudaAddressModeClamp;
+		texRefAzimuth.filterMode = cudaFilterModeLinear;
 		texRefAzimuth.normalized = false;
 		cudaBindTextureToArray(&texRefAzimuth, deviceAzimuthArray,&channelDescAzimuth);
 		cudaDeviceProp prop;
 		cudaGetDeviceProperties(&prop, selectedCudaDeviceId);
-		dim3 dimBlock(16, 16); 
+		dim3 dimBlock(16, 16);
 		int xgrid = (xOutputSize + dimBlock.x - 1) / dimBlock.x;
 		int ygrid = (yOutputSize + dimBlock.y - 1) / dimBlock.y;
-		if (xgrid<ygrid){
+		if (xgrid<ygrid) {
 			if (ygrid % prop.multiProcessorCount!=0)
-			ygrid = ygrid +prop.multiProcessorCount- ygrid % prop.multiProcessorCount;
-		}else{
+				ygrid = ygrid +prop.multiProcessorCount- ygrid % prop.multiProcessorCount;
+		} else {
 			if (xgrid % prop.multiProcessorCount!=0)
-			xgrid = xgrid +prop.multiProcessorCount- xgrid % prop.multiProcessorCount;
+				xgrid = xgrid +prop.multiProcessorCount- xgrid % prop.multiProcessorCount;
 		}
-		dim3 dimGrid(xgrid,ygrid); 
+		dim3 dimGrid(xgrid,ygrid);
 		//convert heading to radians
-		heading = PI*heading/180; 
+		heading = PI*heading/180;
 		interpCartKernel<<<dimGrid, dimBlock>>>(deviceFrameBuffer, yOutputSize,xOutputSize,14.0,xOffset,yOffset,heading-(PI/2),gridSize,rangeBinSize,(PI*angleStep)/180,numberOfRangeBins,tvg,maxAngleBin);
 		cudaMemcpy(interplatedPolarFrame, deviceFrameBuffer, yOutputSize*xOutputSize*sizeof(float), cudaMemcpyDeviceToHost);
 		cudaUnbindTexture( texRefPolar );

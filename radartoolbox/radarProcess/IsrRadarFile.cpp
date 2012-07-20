@@ -18,14 +18,14 @@
 #include "GpuGrid.h"
 
 #include <windows.h>
-#include <tchar.h> 
+#include <tchar.h>
 #include <stdio.h>
 #include <strsafe.h>
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <stdlib.h>
-#include <netcdfcpp.h>	
+#include <netcdfcpp.h>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <IL/il.h>
@@ -59,59 +59,59 @@ IsrRadarFile::IsrRadarFile(string fileName) {
 
 }
 
-bool IsrRadarFile::zipperCheck(int frameIndex) 
+bool IsrRadarFile::zipperCheck(int frameIndex)
 {
 	const short *framePtr = static_cast<short*>(dataAddress)+20+numberOfCollectionsPerRotation*numberOfRangeBins*frameIndex;
 	short *checkByte;
-	for (int i=0;i<numberOfCollectionsPerRotation;i++) {
+	for (int i=0; i<numberOfCollectionsPerRotation; i++) {
 		if (*framePtr+(i*numberOfRangeBins)+18!=0)
-		zipperFound=true;
+			zipperFound=true;
 		return(true);
 	}
 	zipperFound=false;
 	return(false);
 }
 
-void IsrRadarFile::getFrameAngles(int frameIndex,float *frameAngle){
+void IsrRadarFile::getFrameAngles(int frameIndex,float *frameAngle) {
 	memcpy(frameAngle,azimuthAngle+(numberOfCollectionsPerRotation*frameIndex),numberOfCollectionsPerRotation*sizeof(float));
 }
 void IsrRadarFile::getFrame(int frameIndex,float *frameBuffer, double *frameTime, float *frameAngle)
 {
 	const short *framePtr = static_cast<short*>(dataAddress)+10+numberOfCollectionsPerRotation*numberOfRangeBins*frameIndex;
 	if (framePtr<static_cast<short*>(dataAddress)+dataSize-(numberOfCollectionsPerRotation*numberOfRangeBins)) {
-		for (int i=0;i<numberOfCollectionsPerRotation;i++) {
+		for (int i=0; i<numberOfCollectionsPerRotation; i++) {
 			// check for zipper
 			if (*(framePtr+(i*numberOfRangeBins)+18)!=0) { // zipper found
-				for (int k=0;k<(numberOfRangeBins-doughNut-4);k++)
-				frameBuffer[(i*(numberOfRangeBins-doughNut))+k] =(float)framePtr[(i*numberOfRangeBins)+doughNut-4+k];
-				for (int z =numberOfRangeBins-doughNut-4;z<(numberOfRangeBins-doughNut);z++)
-				frameBuffer[(i*(numberOfRangeBins-doughNut))+z] =0;
+				for (int k=0; k<(numberOfRangeBins-doughNut-4); k++)
+					frameBuffer[(i*(numberOfRangeBins-doughNut))+k] =(float)framePtr[(i*numberOfRangeBins)+doughNut-4+k];
+				for (int z =numberOfRangeBins-doughNut-4; z<(numberOfRangeBins-doughNut); z++)
+					frameBuffer[(i*(numberOfRangeBins-doughNut))+z] =0;
 				//memcpy(frameBuffer+(i*(numberOfRangeBins-doughNut)),framePtr+(i*numberOfRangeBins)+doughNut-4,(numberOfRangeBins-doughNut-4)*sizeof(short));
 				zipperFound=true;
 			} else
-			for (int k=0;k<(numberOfRangeBins-doughNut);k++)
-			frameBuffer[(i*(numberOfRangeBins-doughNut))+k] =(float)framePtr[(i*numberOfRangeBins)+doughNut+k];
+				for (int k=0; k<(numberOfRangeBins-doughNut); k++)
+					frameBuffer[(i*(numberOfRangeBins-doughNut))+k] =(float)framePtr[(i*numberOfRangeBins)+doughNut+k];
 
 			//memcpy(frameBuffer+(i*(numberOfRangeBins-doughNut)),framePtr+(i*numberOfRangeBins)+doughNut,(numberOfRangeBins-doughNut)*sizeof(short));
 		}
 		memcpy(frameTime,collectionTime+(numberOfCollectionsPerRotation*frameIndex),numberOfCollectionsPerRotation*sizeof(float));
 		getFrameAngles(frameIndex,frameAngle);
 	} else
-	cout << "over reading frames\r\n";
+		cout << "over reading frames\r\n";
 
 }
 
-void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize){
-	float *frameAngle = new float[numberOfCollectionsPerRotation];	
+void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize) {
+	float *frameAngle = new float[numberOfCollectionsPerRotation];
 	getFrameAngles(frameIndex,frameAngle);
 	double interpAngles[1440];
 	float y0,y1,x,x0,x1;
 	int sumCount =1;
 	interpAngles[0] =0;
-	for (int i=1;(i<1440);i++) {
+	for (int i=1; (i<1440); i++) {
 		x = (float)i*0.25;
 		while ((x>frameAngle[sumCount]) && (sumCount<numberOfCollectionsPerRotation))
-		sumCount++;
+			sumCount++;
 		if(sumCount<numberOfCollectionsPerRotation) {
 			x0 = frameAngle[sumCount-1];
 			x1 = frameAngle[sumCount];
@@ -119,19 +119,19 @@ void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCo
 			y1 = sumCount;
 			interpAngles[i] = y0 +(x-x0)*((y1-y0)/(x1-x0));
 		} else
-		interpAngles[i] =-1;
+			interpAngles[i] =-1;
 	}
 }
 
 
-void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int interpCount,double stepsize){
+void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int interpCount,double stepsize) {
 	float y0,y1,x,x0,x1;
 	int sumCount =1;
 	interpAngles[0]=0;
-	for (int i=1;(i<interpCount);i++) {
+	for (int i=1; (i<interpCount); i++) {
 		x = (float)i*stepsize;
 		while ((x>frameAngle[sumCount]) && (sumCount<numberOfCollectionsPerRotation))
-		sumCount++;
+			sumCount++;
 		if(sumCount<numberOfCollectionsPerRotation) {
 			x0 = frameAngle[sumCount-1];
 			x1 = frameAngle[sumCount];
@@ -139,7 +139,7 @@ void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int
 			y1 = sumCount;
 			interpAngles[i] = y0 +(x-x0)*((y1-y0)/(x1-x0));
 		} else
-		interpAngles[i] =-1;
+			interpAngles[i] =-1;
 	}
 }
 
@@ -156,11 +156,11 @@ bool IsrRadarFile::loadBinaryFile()
 {
 	filesLoaded = false;
 	cout << "\r\nreading Mfile\r\n";
-	if (!readMFile()) 
-	return(false);
+	if (!readMFile())
+		return(false);
 	cout << "reading Afile\r\n";
 	if (!readAFile())
-	return(false);
+		return(false);
 	cout << "reading OK\r\n";
 	filesLoaded = true;
 	return(true);
@@ -171,8 +171,8 @@ bool IsrRadarFile::loadBinaryFile()
 void IsrRadarFile::pushFrameToMatlab(int index)
 {
 	/*	if (ep==NULL) {
-//	  if (!(ep = engOpen("\0"))) {
-//		fprintf(stderr, "\nCan't start MATLAB engine\n");
+	//	  if (!(ep = engOpen("\0"))) {
+	//		fprintf(stderr, "\nCan't start MATLAB engine\n");
 	}
 	short *frameBuffer = new short[numberOfCollectionsPerRotation*numberOfRangeBins];
 	double *collectionTimes = new double[numberOfCollectionsPerRotation];
@@ -181,9 +181,9 @@ void IsrRadarFile::pushFrameToMatlab(int index)
 	mwSize dims[2];
 	dims[0] =numberOfCollectionsPerRotation;
 	dims[1] =numberOfRangeBins;
-//	   mxArray *data = mxCreateNumericArray(2,dims,mxINT16_CLASS,mxREAL);
-//	   memcpy((void *)mxGetPr(data), (void *)frameBuffer, sizeof(frameBuffer));
-//	   engPutVariable(ep,"fameBuffer",data);
+	//	   mxArray *data = mxCreateNumericArray(2,dims,mxINT16_CLASS,mxREAL);
+	//	   memcpy((void *)mxGetPr(data), (void *)frameBuffer, sizeof(frameBuffer));
+	//	   engPutVariable(ep,"fameBuffer",data);
 	}*/
 }
 
@@ -215,12 +215,12 @@ bool IsrRadarFile::readMetaData()
 	path p(fileName);
 	string xmlFileName =  fileName.substr(0, fileName.length()-3) + "xml";
 	path x(xmlFileName);
-	if (!exists(x)){ // OK lets copy the default xml file!
+	if (!exists(x)) { // OK lets copy the default xml file!
 		string defaultxmlFileName = p.parent_path().string() + "\\" +"metadata.xml";
 		string command = "copy "+defaultxmlFileName+" "+xmlFileName;
 		system(command.c_str());
 	}
-	if (exists(x)){
+	if (exists(x)) {
 		metaXml = new TiXmlDocument(xmlFileName.c_str());
 		metaXml->LoadFile();
 		root = metaXml->RootElement();
@@ -274,11 +274,13 @@ bool IsrRadarFile::readMetaData()
 		acknowledgement =root->FirstChild("acknowledgement")->FirstChild()->Value();
 		distributionStatement =root->FirstChild("distribution_statement")->FirstChild()->Value();
 		return (true);
-	} 
+	}
 	return(false);
 }
 
-int IsrRadarFile::getFileSize() {return(file_size(fileName.c_str()));}
+int IsrRadarFile::getFileSize() {
+	return(file_size(fileName.c_str()));
+}
 
 void IsrRadarFile::makeNetCdfFileName(string productCode, string extension)
 {
@@ -286,11 +288,11 @@ void IsrRadarFile::makeNetCdfFileName(string productCode, string extension)
 	tm *ptm = localtime ( &t );
 	char fn[MAX_PATH];
 	sprintf(fn,"%s\\%s_%s-%s_RADAR_%04u-%02u-%02u_%02u-%02u_%s.%s",outputPath.c_str(),projectCode.c_str(),experimentCode.c_str(),deploymentCode.c_str(),ptm->tm_year+1900,
-	ptm->tm_mon+1,ptm->tm_mday,ptm->tm_hour,ptm->tm_min,productCode.c_str(),extension.c_str());
+	        ptm->tm_mon+1,ptm->tm_mday,ptm->tm_hour,ptm->tm_min,productCode.c_str(),extension.c_str());
 	netCdfFileName = string(fn);
 }
 
-bool IsrRadarFile::readMFile(){
+bool IsrRadarFile::readMFile() {
 	path p(fileName);
 	m_file = NULL;
 	region = NULL;
@@ -302,31 +304,31 @@ bool IsrRadarFile::readMFile(){
 		dataSize  = region->get_size();
 		return(true);
 	} else
-	return(false);
+		return(false);
 }
 
-char * IsrRadarFile::getAzimuthLine(char *source,int *lineBuffer, char *eof){
+char * IsrRadarFile::getAzimuthLine(char *source,int *lineBuffer, char *eof) {
 	lineBuffer[0] =0;
 	int numbercount=0;
 	while ((*source==' ') && (source<eof) && (numbercount<6))
-	source++;
+		source++;
 	while ((*source!='\r') && (source<eof) && (numbercount<6))
 	{
-		if ((*source<'0') ||(*source>'9')){
+		if ((*source<'0') ||(*source>'9')) {
 			while (((*source<'0') ||(*source>'9')) && (*source!='\r') && (source<eof))
-			source++;
+				source++;
 			numbercount++;
 			if (numbercount<6)
-			lineBuffer[numbercount] =0;
+				lineBuffer[numbercount] =0;
 		}
 		if ((source<eof) && (numbercount<6))
-		lineBuffer[numbercount]=lineBuffer[numbercount]*10 + ((int)*source++ - '0');
+			lineBuffer[numbercount]=lineBuffer[numbercount]*10 + ((int)*source++ - '0');
 	}
 	if (numbercount<6)
-	for (int i=numbercount+1;i<6;i++)
-	lineBuffer[i] =-999;
+		for (int i=numbercount+1; i<6; i++)
+			lineBuffer[i] =-999;
 	while ((*source!='\r') && (source<eof))
-	source++;
+		source++;
 	return(source+2);
 }
 bool IsrRadarFile::readAFile()
@@ -353,7 +355,7 @@ bool IsrRadarFile::readAFile()
 		if (collectionTime!=NULL) {
 			delete[] collectionTime;
 			delete[] azimuthAngle;
-		}  
+		}
 		collectionTime = new float[numberOfRotations*numberOfCollectionsPerRotation];
 		azimuthAngle = new float[numberOfRotations*numberOfCollectionsPerRotation];
 
@@ -366,12 +368,12 @@ bool IsrRadarFile::readAFile()
 			int shaftCount, scanCount;
 			//	  sscanf(lineBuffer,"%d %d %d %d %d %d",&scanCount,&shaftCount,&hour,&minuet,&second,&miliSecond);
 			if (lineCount % numberOfCollectionsPerRotation==0)
-			azimuthZero = lineBuffer[1];
+				azimuthZero = lineBuffer[1];
 			if (lineBuffer[2]==-999)
-			collectionTime[lineCount]=-999;
+				collectionTime[lineCount]=-999;
 			else
-			collectionTime[lineCount] = ((double)lineBuffer[2]*1/24)+((double)lineBuffer[3]*1/(60*24))+((double)lineBuffer[4]*1/(60*24*60))+((double)lineBuffer[5]*1/(60*24*60*1000));
-			azimuthAngle[lineCount] = ((double)(lineBuffer[1]-azimuthZero))*360/4096; 
+				collectionTime[lineCount] = ((double)lineBuffer[2]*1/24)+((double)lineBuffer[3]*1/(60*24))+((double)lineBuffer[4]*1/(60*24*60))+((double)lineBuffer[5]*1/(60*24*60*1000));
+			azimuthAngle[lineCount] = ((double)(lineBuffer[1]-azimuthZero))*360/4096;
 			lineCount++;
 		}
 		if  (source!=NULL) {
@@ -383,9 +385,9 @@ bool IsrRadarFile::readAFile()
 			float ratotionInterval =(float)totalCaptureTime / (float)numberOfRotations;
 			float incTime = (float) numberOfWaveSumed /(float) pulseRepetitionFrequency;
 			float startTime =getStartTime();
-			for (int i=0;i<numberOfCollectionsPerRotation*numberOfRotations;i++)
+			for (int i=0; i<numberOfCollectionsPerRotation*numberOfRotations; i++)
 
-			collectionTime[i]= startTime+ (incTime *float(i % numberOfCollectionsPerRotation)) +(ratotionInterval* (float)(i /  numberOfCollectionsPerRotation));
+				collectionTime[i]= startTime+ (incTime *float(i % numberOfCollectionsPerRotation)) +(ratotionInterval* (float)(i /  numberOfCollectionsPerRotation));
 
 		}
 		delete(a_file);
@@ -408,7 +410,7 @@ bool IsrRadarFile::readAFile()
 	{
 		while (file.good()) {
 			getline(file,lineBuffer);
-			
+
 		}
 	}
 
@@ -424,7 +426,7 @@ bool IsrRadarFile::readAFile()
 //	for (int line=0;line<colectionsPerRotation*scans;line++) {
 //		fscanf(fp,"%d %d",&scanCount,&shaftCount);
 //	}
-	
+
 //	return (true); */
 
 
@@ -448,7 +450,7 @@ void IsrRadarFile::readRadarParams()
 		delete[] headerblock;
 
 	} else
-	cout << "cannot read header!";
+		cout << "cannot read header!";
 }
 
 void IsrRadarFile::check_err(const int stat, const int line, const char *file) {
@@ -461,50 +463,50 @@ void IsrRadarFile::check_err(const int stat, const int line, const char *file) {
 
 
 void IsrRadarFile::processFile()
-{	  	cout << "reading metadata\r\n";
+{	cout << "reading metadata\r\n";
 	readMetaData();
 	cout << "processing";
 	TiXmlNode *processing =root->FirstChild("processing");
 	TiXmlNode*node;
-	for( node = root->FirstChild("processing")->FirstChildElement();node;node = node->NextSibling())
+	for( node = root->FirstChild("processing")->FirstChildElement(); node; node = node->NextSibling())
 	{
-		if (strcmp(node->Value(),"grid")==0){
-			if (!filesLoaded) 
-			loadBinaryFile();
+		if (strcmp(node->Value(),"grid")==0) {
+			if (!filesLoaded)
+				loadBinaryFile();
 			string name =node->FirstChild("name")->FirstChild()->Value();
-			cout << "\r\nname:" << name; 
+			cout << "\r\nname:" << name;
 			string code =node->FirstChild("code")->FirstChild()->Value();
-			cout << "\r\ncode:" << code; 
+			cout << "\r\ncode:" << code;
 			float gridSize = atof(node->FirstChild("grid_size")->FirstChild()->Value());
-			cout << "\r\ngridSize:" << gridSize; 
+			cout << "\r\ngridSize:" << gridSize;
 			float xSize =atof(node->FirstChild("x_size")->FirstChild()->Value());
-			cout << "\r\nxSize:" << xSize; 
+			cout << "\r\nxSize:" << xSize;
 			float ySize =atof(node->FirstChild("y_size")->FirstChild()->Value());
-			cout << "\r\nySize:" << ySize; 
+			cout << "\r\nySize:" << ySize;
 			float imageGridSize =atof(node->FirstChild("image_grid_size")->FirstChild()->Value());
-			cout << "\r\nimageGridSize:" << imageGridSize; 
+			cout << "\r\nimageGridSize:" << imageGridSize;
 			float xOffset =atof(node->FirstChild("x_offset")->FirstChild()->Value());
-			cout << "\r\nxOffset:" << xOffset; 
+			cout << "\r\nxOffset:" << xOffset;
 			float yOffset =atof(node->FirstChild("y_offset")->FirstChild()->Value());
-			cout << "\r\nyOffset:" << yOffset; 
+			cout << "\r\nyOffset:" << yOffset;
 			float heading =atof(node->FirstChild("rotation_about_radar")->FirstChild()->Value());
-			cout << "\r\nheading:" << heading; 
+			cout << "\r\nheading:" << heading;
 			int startFrame =atoi(node->FirstChild("start_frame")->FirstChild()->Value());
-			cout << "\r\nstartFrame:" << startFrame; 
+			cout << "\r\nstartFrame:" << startFrame;
 			int frameCount =atoi(node->FirstChild("frame_count")->FirstChild()->Value());
-			cout << "\r\nframeCount:" << frameCount; 
+			cout << "\r\nframeCount:" << frameCount;
 			bool xyCoordinates =strcmp(node->FirstChild("coordinates")->FirstChild()->Value(),"xy")==0;
-			cout << "\r\nxyCoordinates:" << xyCoordinates; 
+			cout << "\r\nxyCoordinates:" << xyCoordinates;
 			bool sumImage =strcmp(node->FirstChild("sum_image")->FirstChild()->Value(),"1")==0;
-			cout << "\r\nsumImage:" << sumImage; 
+			cout << "\r\nsumImage:" << sumImage;
 			bool outputNcdf =strcmp(node->FirstChild("write_netcdf")->FirstChild()->Value(),"1")==0;
-			cout << "\r\noutputNcdf:" << outputNcdf; 
+			cout << "\r\noutputNcdf:" << outputNcdf;
 			float cLim =atof(node->FirstChild("color_limit")->FirstChild()->Value());
-			cout << "\r\ncLim:" << cLim; 
+			cout << "\r\ncLim:" << cLim;
 			outputPath=node->FirstChild("output_path")->FirstChild()->Value();
-			cout << "\r\noutputPath:" << outputPath; 
+			cout << "\r\noutputPath:" << outputPath;
 			makeNetCdfFileName(code,"nc");
-			processGriddedData(NULL,startFrame,frameCount,xSize,ySize,xOffset,yOffset,gridSize,heading,xyCoordinates,sumImage,outputNcdf,imageGridSize,cLim); 
+			processGriddedData(NULL,startFrame,frameCount,xSize,ySize,xOffset,yOffset,gridSize,heading,xyCoordinates,sumImage,outputNcdf,imageGridSize,cLim);
 		} else if (strcmp(node->Value(),"polar")==0) {
 		} else if (strcmp(node->Value(),"fixedpolar")==0) {
 
@@ -597,14 +599,14 @@ void IsrRadarFile::saveAsFixedPolarNetCdfFile(const char *fileName)
 	northingVar->put(&northing,1);
 	// calculate the range bins
 	float *distances = new float[numberOfRangeBins-doughNut];
-	// 
+	//
 	for (int i=0;i <numberOfRangeBins-doughNut;i++)
 		distances[i] = (1+i)*SPEED_OF_LIGHT/(sampleRate*1000000)/2;
 	rangeVar->put(distances);
 	delete distances;
 	//  int *collection = new int[numberOfCollectionsPerRotation];
 	//  for (int i=0;i<numberOfCollectionsPerRotation;i++)
-//		   collection[i]=i;
+	//		   collection[i]=i;
 			int *collection = new int[inpterpbins];
 	for (int i=0;i<inpterpbins;i++)
 		collection[i]=i;
@@ -623,7 +625,7 @@ void IsrRadarFile::saveAsFixedPolarNetCdfFile(const char *fileName)
 	float *collectionAngle =  gridder.getRawAngleBuffer(); //new float[inpterpbins];
 	zipperFound = false;
 
-for (int i=0;i<10;i++){ //numberOfRotations
+	for (int i=0;i<10;i++){ //numberOfRotations
 	getFrame(i,frameBuffer,collectionTimes,collectionAngle);
 	float * interpframe =gridder.interpolateCartFrame(frameBuffer,collectionAngle,0,0,3,0);
 	//   cout << "frame :" << i;
@@ -634,15 +636,15 @@ for (int i=0;i<10;i++){ //numberOfRotations
 	}
 	ncFile.add_att( "zipper_found",zipperFound);
 	ncFile.add_att( "dough_nut_removed",(doughNut>0));
-}
-delete (collectionAngle);
-delete (collectionTimes);
-delete (frameBuffer);
-delete (times);
-//  delete (collection);
+	}
+	delete (collectionAngle);
+	delete (collectionTimes);
+	delete (frameBuffer);
+	delete (times);
+	//  delete (collection);
 
 
-*/
+	*/
 
 }
 
@@ -658,7 +660,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 	//	   frameCount =numberOfRotations-startFrame;
 	//size_t buffer =1024*1024;
 	if (frameCount<0)
-	frameCount =numberOfRotations-startFrame;
+		frameCount =numberOfRotations-startFrame;
 	int inpterpbins = 360.0/0.25;
 	NcFile *ncFile = NULL;
 	float *times = new float[frameCount];
@@ -711,7 +713,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 		ncFile->add_att( "acknowledgement",acknowledgement.c_str());
 		ncFile->add_att( "distribution_statement",distributionStatement.c_str());
 		ncFile->add_att("dough_nut", doughNut);
-		
+
 		NcDim *northingDim =ncFile->add_dim("northing",ySize);
 		NcDim *eastingDim = ncFile->add_dim("easting",xSize);
 		NcDim *timeDim = ncFile->add_dim("time",frameCount);
@@ -724,34 +726,34 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 
 		// magVar = ncFile->add_var("radar_magnitude",ncShort,timeDim,collectionDim,rangeDim);
 		magVar = ncFile->add_var("radar_magnitude",ncShort,timeDim,eastingDim,northingDim);
-		
+
 		// calculate the range bins
 		float *northings = new float[ySize];
-		// 
+		//
 		if (xyCoordinates) {
-			for (int i=0;i<ySize;i++)
-			northings[i] = -(yOffset*gridSize) + (gridSize*i);
+			for (int i=0; i<ySize; i++)
+				northings[i] = -(yOffset*gridSize) + (gridSize*i);
 			northingVar->put(northings,ySize);
 			delete northings;
 			float *eastngs = new float[xSize];
-			for (int i=0;i<xSize;i++)
-			eastngs[i]= (gridSize*i)-(xOffset*gridSize);
+			for (int i=0; i<xSize; i++)
+				eastngs[i]= (gridSize*i)-(xOffset*gridSize);
 			eastingVar->put(eastngs,xSize);
 			delete eastngs;
 		} else {
-			for (int i=0;i<ySize;i++)
-			northings[i] =northing -(yOffset*gridSize) + (gridSize*i);
+			for (int i=0; i<ySize; i++)
+				northings[i] =northing -(yOffset*gridSize) + (gridSize*i);
 			northingVar->put(northings,ySize);
 			delete northings;
 			float *eastngs = new float[xSize];
-			for (int i=0;i<xSize;i++)
-			eastngs[i]=easting + (xOffset*gridSize) - (gridSize*i);
+			for (int i=0; i<xSize; i++)
+				eastngs[i]=easting + (xOffset*gridSize) - (gridSize*i);
 			eastingVar->put(eastngs,xSize);
 			delete eastngs;
 		}
-		
-		for (int i=0;i<frameCount;i++)
-		times[i]= collectionTime[i*numberOfCollectionsPerRotation];
+
+		for (int i=0; i<frameCount; i++)
+			times[i]= collectionTime[i*numberOfCollectionsPerRotation];
 
 	}
 	timeVar->put(times,frameCount);
@@ -762,24 +764,24 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 	float *collectionAngle = gridder.getRawAngleBuffer();
 	short *output = new short[xSize*ySize];
 	float *meanImage = new float[xSize*ySize];
-	for (int i =0;i<xSize*ySize;i++)
-	meanImage[i]=0;
+	for (int i =0; i<xSize*ySize; i++)
+		meanImage[i]=0;
 	ilInit(); /* Initialization of DevIL */
 	ilGenImages(1, &texid); /* Generation of one image name */
 	ilEnable(IL_FILE_OVERWRITE);
 	ilBindImage(texid); /* Binding of image name */
 	cout << "\n\rProcessing frames :";
-	for (int i=startFrame;i<frameCount;i++){ //numberOfRotations
+	for (int i=startFrame; i<frameCount; i++) { //numberOfRotations
 
 		if (i % 50 == 0)
-		cout << ".";
+			cout << ".";
 		getFrame(i,frameBuffer,collectionTimes,collectionAngle);
 		//   cout << "frame :" << i << gridder.isGpuReady();
 		float * interpframe =gridder.interpolateCartFrame(frameBuffer,collectionAngle,xOffset,yOffset,gridSize,heading);
 		//   cout << "Grid :" << i;
 		float *interpFramePointer =interpframe;
-		for (int ci=0;ci<xSize*ySize;ci++)
-		output[ci]=short(interpframe[ci]);
+		for (int ci=0; ci<xSize*ySize; ci++)
+			output[ci]=short(interpframe[ci]);
 		if (interpframe!=NULL) {
 			if (ncFile!=NULL) {
 				magVar->put_rec(output,i);
@@ -787,7 +789,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 
 			}
 			if (summedImage)
-			sumImageArray(meanImage,interpframe,xSize,ySize,frameCount);
+				sumImageArray(meanImage,interpframe,xSize,ySize,frameCount);
 
 		}
 	}
@@ -800,7 +802,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 		ncFile->close();
 		delete (ncFile);
 	}
-	if (summedImage){
+	if (summedImage) {
 		path p(netCdfFileName);
 		p.replace_extension(".jpg");
 		saveNormalizedMeanJPG(p.string().c_str(),meanImage,1,xSize,ySize,gridSize,imageGridSize,imageGridSize,cLim);
@@ -821,8 +823,8 @@ void IsrRadarFile::sumImageArray(float *meanImage,float *interpframe,int xSize,i
 {
 	float *meanp = meanImage;
 	float *interpFramePointer =interpframe;
-	for (int c=0;c<xSize*ySize;c++){
-		*meanp++ =*meanp+(*interpFramePointer/frameCount); 
+	for (int c=0; c<xSize*ySize; c++) {
+		*meanp++ =*meanp+(*interpFramePointer/frameCount);
 		interpFramePointer++;
 	}
 }
@@ -839,14 +841,14 @@ bool IsrRadarFile::renameSource(int year)
 			string time =p.filename().string().substr(4,4);
 			string exten =p.extension().string();
 			sprintf(newFileName,"%s\\%c%04u%02u%02u%s%s",p.parent_path().string().c_str(),p.filename().string().at(0),ptm->tm_year+1900,
-			ptm->tm_mon+1,ptm->tm_mday,time.c_str(),exten.c_str());
+			        ptm->tm_mon+1,ptm->tm_mday,time.c_str(),exten.c_str());
 
 			path newFile(newFileName);
 			if (!exists(newFile)) // lets do some renameing!
-			rename(p,newFile);		
+				rename(p,newFile);
 			fileName =newFileName;
 		}
-	} 
+	}
 	string afile = p.parent_path().string()+"\\A"+p.filename().string().substr(1,100);
 
 	path oldAfile(afile);
@@ -857,9 +859,9 @@ bool IsrRadarFile::renameSource(int year)
 		string time =oldAfile.filename().string().substr(4,4);
 		string exten =oldAfile.extension().string();
 		sprintf(newFileName,"%s\\%c%04u%02u%02u%s%s",oldAfile.parent_path().string().c_str(),oldAfile.filename().string().at(0),ptm->tm_year+1900,
-		ptm->tm_mon+1,ptm->tm_mday,time.c_str(),exten.c_str());
+		        ptm->tm_mon+1,ptm->tm_mday,time.c_str(),exten.c_str());
 		path newAfile(newFileName);
-		rename(oldAfile,newAfile);	
+		rename(oldAfile,newAfile);
 	}
 	return(true);
 }
@@ -867,16 +869,16 @@ bool IsrRadarFile::renameSource(int year)
 void IsrRadarFile::saveNormalizedMeanJPG(const char *fileName,float *meanImage,bool gridOn,int xSize,int ySize,int pixelSize,int xgrid,int ygrid,float cLim)
 {
 	float *meanp = meanImage;
-	for (int c=0;c<xSize*ySize;c++){
+	for (int c=0; c<xSize*ySize; c++) {
 		*meanp =*meanp/cLim; //
 		int row = c / ySize;
 		int col = (c - row *ySize)*pixelSize;
 		row = (row * pixelSize);
-		if ((ygrid>0) && (xgrid>0)){
+		if ((ygrid>0) && (xgrid>0)) {
 			if ((row  % ygrid)<pixelSize)
-			*meanp = 1-*meanp;
+				*meanp = 1-*meanp;
 			if ((col % xgrid)<pixelSize)
-			*meanp = 1-*meanp;
+				*meanp = 1-*meanp;
 		}
 		meanp++;
 	}
@@ -891,9 +893,9 @@ void IsrRadarFile::saveAsSummedImage(const char *fileName,int startFrame, int fr
 
 
 	if (fileName==NULL)
-	fileName = netCdfFileName.c_str();
+		fileName = netCdfFileName.c_str();
 	if (frameCount<0)
-	frameCount =numberOfRotations-startFrame;
+		frameCount =numberOfRotations-startFrame;
 	//size_t buffer =1024*1024;
 
 	int inpterpbins = 360.0/0.25;
@@ -904,19 +906,19 @@ void IsrRadarFile::saveAsSummedImage(const char *fileName,int startFrame, int fr
 	float *collectionAngle = gridder->getRawAngleBuffer();
 	zipperFound = false;
 
-	
+
 	float *meanImage = new float[xSize*ySize];
-	for (int i =0;i<xSize*ySize;i++)
-	meanImage[i]=0;
+	for (int i =0; i<xSize*ySize; i++)
+		meanImage[i]=0;
 	ilInit(); /* Initialization of DevIL */
 	ilGenImages(1, &texid); /* Generation of one image name */
 	ilEnable(IL_FILE_OVERWRITE);
 	ilBindImage(texid); /* Binding of image name */
-	for (int i=startFrame;i<frameCount;i++){ //numberOfRotations
+	for (int i=startFrame; i<frameCount; i++) { //numberOfRotations
 		getFrame(i,frameBuffer,collectionTimes,collectionAngle);
 		float * interpframe =gridder->interpolateCartFrame(frameBuffer,collectionAngle,xOffset,yOffset,gridSize,heading);
 		if (interpframe!=NULL)
-		sumImageArray(meanImage,interpframe,xSize,ySize,frameCount);	     
+			sumImageArray(meanImage,interpframe,xSize,ySize,frameCount);
 	}
 	frameBuffer = NULL;
 	collectionAngle = NULL;

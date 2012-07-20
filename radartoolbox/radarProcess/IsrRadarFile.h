@@ -19,7 +19,7 @@
 #include <boost/interprocess/mapped_region.hpp>
 #include <string>
 #include <windows.h>
-#include <tchar.h> 
+#include <tchar.h>
 #include <stdio.h>
 #include <strsafe.h>
 #include <iostream>
@@ -54,13 +54,13 @@ class IsrRadarFile {
 	TiXmlDocument *metaXml;
 	TiXmlElement *root;
 	string projectCode,experimentCode,deploymentCode,project,experiment,conventions,title,
-	institution,dateCreated,dateModified,xmlAbstract,comment,model,transmitPulseWidth,
-	antennaType,horizontalBeamWidth,verticalBeamWidth,
-	rotationSpeed,keywords,references,netcdfVersion,siteCode,platformCode,
-	namingAuthority,fileVersion,fileVersionQualityControl,history,geospatialLatMin,
-	geospatialLatMax,geospatialLonMin,geospatialLonMax,geospatialVerticalMin,
-	geospatialVerticalMax,dataCentre,dataCentreEmail,authorEmail,author,principalInvestigator,
-	principalInvestigatorEmail,institutionReferences,citation,acknowledgement,distributionStatement;
+	       institution,dateCreated,dateModified,xmlAbstract,comment,model,transmitPulseWidth,
+	       antennaType,horizontalBeamWidth,verticalBeamWidth,
+	       rotationSpeed,keywords,references,netcdfVersion,siteCode,platformCode,
+	       namingAuthority,fileVersion,fileVersionQualityControl,history,geospatialLatMin,
+	       geospatialLatMax,geospatialLonMin,geospatialLonMax,geospatialVerticalMin,
+	       geospatialVerticalMax,dataCentre,dataCentreEmail,authorEmail,author,principalInvestigator,
+	       principalInvestigatorEmail,institutionReferences,citation,acknowledgement,distributionStatement;
 	int netCdfStat,netCdfFileId,productcode;
 	void readRadarParams();
 	bool readAFile();
@@ -84,13 +84,27 @@ public:
 	bool loadBinaryFile();
 	int getFileSize();
 	void processFile();
-	int getSampleRate(){return(sampleRate);}
-	int getScanCount(){return(numberOfRotations);}
-	int getNumberOfRangeBins(){return(numberOfRangeBins);}
-	int getNumberOfCollectionsPerRotation(){return(numberOfCollectionsPerRotation);}
-	int getRangeGateCount(){return(rangeGateCount);}
-	int getNumberOfWaveSumed(){return(numberOfWaveSumed);}
-	string getfileName(){return(fileName);};
+	int getSampleRate() {
+		return(sampleRate);
+	}
+	int getScanCount() {
+		return(numberOfRotations);
+	}
+	int getNumberOfRangeBins() {
+		return(numberOfRangeBins);
+	}
+	int getNumberOfCollectionsPerRotation() {
+		return(numberOfCollectionsPerRotation);
+	}
+	int getRangeGateCount() {
+		return(rangeGateCount);
+	}
+	int getNumberOfWaveSumed() {
+		return(numberOfWaveSumed);
+	}
+	string getfileName() {
+		return(fileName);
+	};
 	void getFrame(int frameIndex,float *frameBuffer, double *frameTime, float *frameAngle);
 	void getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize);
 	time_t getStartTime();
