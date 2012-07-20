@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 	AnyOption *opt = new AnyOption();
 	// set up useage/help with addUsage
 	opt->addUsage( "" );
-	opt->addUsage( "Usage: radarprocess [-y year] [-m:metadata file] [-file binaryfilename]" );
+	opt->addUsage( "Usage: radarprocess [-y year] [-m:metadata file] [--file binaryfilename]" );
 	opt->addUsage( "" );
 	opt->addUsage( " -h  --help            Prints this help " );
 	opt->addUsage( " -y  --year 2010       force year for naming" );
