@@ -14,19 +14,19 @@
 #include <cuda.h>
 
 class GpuGrid {
-		float *interpAngles;
-		short*azimuthMask; //,*deviceAzimuthMask;
-		float *interplatedPolarFrame, *deviceFrameBuffer,*rawAngleBuffer,*deviceRawAngleBuffer, *rawFrameBuffer,*deviceAzimuth;
-		float *azimuthArray,rangeBinSize;
-	    cudaArray *deviceAzimuthArray,*deviceRawFrameArray; 
-		int xOutputSize,yOutputSize,numberOfCollectionsPerRotation, numberOfRangeBins, numberOfAngleBins;
-		float angleStep;
-		bool gpuReady;
-		cudaChannelFormatDesc channelDescPolar,channelDescAzimuth;
-		void interpolateAngles(float *frameAngle);
-		bool tvg;
-		int maxAngleBin,selectedCudaDeviceId;
-		int initGPU();
+	float *interpAngles;
+	short*azimuthMask; //,*deviceAzimuthMask;
+	float *interplatedPolarFrame, *deviceFrameBuffer,*rawAngleBuffer,*deviceRawAngleBuffer, *rawFrameBuffer,*deviceAzimuth;
+	float *azimuthArray,rangeBinSize;
+	cudaArray *deviceAzimuthArray,*deviceRawFrameArray; 
+	int xOutputSize,yOutputSize,numberOfCollectionsPerRotation, numberOfRangeBins, numberOfAngleBins;
+	float angleStep;
+	bool gpuReady;
+	cudaChannelFormatDesc channelDescPolar,channelDescAzimuth;
+	void interpolateAngles(float *frameAngle);
+	bool tvg;
+	int maxAngleBin,selectedCudaDeviceId;
+	int initGPU();
 public:
 	GpuGrid(int collections, int rangeBins, float step,int xSize,int ySize,float sampleRate,bool applyTgv);
 	~GpuGrid();
