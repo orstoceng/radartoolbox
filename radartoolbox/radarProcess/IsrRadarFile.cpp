@@ -44,10 +44,6 @@ using namespace boost::filesystem;
 using namespace std;
 
 
-
-
-void intrepPolarFrame(float *frameBuffer,short *rawFrameBuffer,int numberOfCollectionsPerRotation,int numberOfRangeBins,int interpCount);
-bool initGPU();
 IsrRadarFile::IsrRadarFile(string fileName) {
 	this->fileName = fileName;
 	filesLoaded =false;
