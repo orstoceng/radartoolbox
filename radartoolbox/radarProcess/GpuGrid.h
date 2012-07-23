@@ -9,7 +9,6 @@
 #include "device_launch_parameters.h"
 #include <cufft.h>
 #include <stdlib.h>
-#include "GpuGrid.h"
 #include <cuComplex.h>
 #include <cuda.h>
 
