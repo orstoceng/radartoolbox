@@ -802,7 +802,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 		path p(netCdfFileName);
 		p.replace_extension(".jpg");
 		saveNormalizedMeanJPG(p.string().c_str(),meanImage,1,xSize,ySize,gridSize,imageGridSize,imageGridSize,cLim);
-		cout << "Image written:" << p.string() << "\n\r" ;
+		cout << "Image written:" << p.string() << "\r\n" ;
 	}
 	delete (collectionTimes);
 	delete (times);

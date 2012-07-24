@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 	//----------------------------------------------------------------
 	if (opt->getValue("file")!=NULL) {
 		// print the provided ISR binary file name
-		cout << "output:\n\rsourcefile:" << opt->getValue("file") <<"\n\r";
+		cout << "output:\r\nsourcefile: " << opt->getValue("file") <<"\r\n";
 		path x(opt->getValue("file"));
 		if (exists(x)) {
 			
