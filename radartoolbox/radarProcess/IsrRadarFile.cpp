@@ -41,6 +41,7 @@
 //#include "CImg.h"
 
 using namespace boost::filesystem;
+using namespace boost::interprocess;
 using namespace std;
 
 

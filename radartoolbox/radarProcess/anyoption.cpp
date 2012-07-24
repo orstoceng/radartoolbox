@@ -58,9 +58,15 @@
  * Fix from Boyan Asenov for a bug in mixing up option indexes 
  * leading to exception when mixing different options types
  */
+
+/* Modified by Randy Pittman 24Jul2012
+ * Moved "using namespace std" from anyoption.h to anyoption.cpp,
+ * so the global namespace isn't polluted.
+ */
+
 //#include "stdafx.h"
 #include "anyoption.h"
-
+using namespace std;
 
 AnyOption::AnyOption()
 {

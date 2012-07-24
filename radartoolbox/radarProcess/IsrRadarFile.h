@@ -31,8 +31,6 @@
 #ifndef ISRRADARFILE_H
 #define ISRRADARFILE_H
 
-using namespace boost::interprocess;
-
 
 class IsrRadarFile {
 	int sampleRate;
@@ -45,15 +43,15 @@ class IsrRadarFile {
 	int imageGrid;
 	int pulseRepetitionFrequency;
 	float *azimuthAngle,*collectionTime;
-	file_mapping *m_file;
-	mapped_region *region;
+	boost::interprocess::file_mapping *m_file;
+	boost::interprocess::mapped_region *region;
 	void * dataAddress;
 	int dataSize,doughNut;
 	float latitude,longitude,northing,easting;
-	string fileName,netCdfFileName,outputPath;
+	std::string fileName,netCdfFileName,outputPath;
 	TiXmlDocument *metaXml;
 	TiXmlElement *root;
-	string projectCode,experimentCode,deploymentCode,project,experiment,conventions,title,
+	std::string projectCode,experimentCode,deploymentCode,project,experiment,conventions,title,
 	       institution,dateCreated,dateModified,xmlAbstract,comment,model,transmitPulseWidth,
 	       antennaType,horizontalBeamWidth,verticalBeamWidth,
 	       rotationSpeed,keywords,references,netcdfVersion,siteCode,platformCode,
@@ -65,7 +63,7 @@ class IsrRadarFile {
 	void readRadarParams();
 	bool readAFile();
 	bool readMFile();
-	void makeNetCdfFileName(string productCode, string extension);
+	void makeNetCdfFileName(std::string productCode, std::string extension);
 	bool readMetaData();
 	void check_err(const int stat, const int line, const char *file);
 	int defineNetCdfVariables(int  ncid);
@@ -79,7 +77,7 @@ class IsrRadarFile {
 	void sumImageArray(float *meanImage,float *interpframe,int xSize,int ySize,int frameCount);
 	void saveNormalizedMeanJPG(const char *fileName,float *meanImage,bool gridOn,int xSize,int ySize,int pixelSize,int xgrid,int ygrid,float cLim);
 public:
-	IsrRadarFile(string fileName);
+	IsrRadarFile(std::string fileName);
 	~IsrRadarFile();
 	bool loadBinaryFile();
 	int getFileSize();
@@ -102,7 +100,7 @@ public:
 	int getNumberOfWaveSumed() {
 		return(numberOfWaveSumed);
 	}
-	string getfileName() {
+	std::string getfileName() {
 		return(fileName);
 	};
 	void getFrame(int frameIndex,float *frameBuffer, double *frameTime, float *frameAngle);

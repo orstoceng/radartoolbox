@@ -27,7 +27,9 @@
 
 #define TRUE_FLAG "true" 
 
-using namespace std;
+/* EDIT: Randall Pittman 24Jul2012. "using namespace std;" in the h file 
+ * pollutes the global namespace. Moved to cpp file.
+ */
 
 class AnyOption 
 {
