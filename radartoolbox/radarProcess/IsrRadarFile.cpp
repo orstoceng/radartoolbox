@@ -151,7 +151,7 @@ void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int
 time_t IsrRadarFile::getStartTime()
 {
 	path p(fileName);
-	std::time_t t = boost::filesystem::last_write_time(p)-totalCaptureTime;
+	time_t t = boost::filesystem::last_write_time(p)-totalCaptureTime;
 	return(t);
 }
 
@@ -853,7 +853,7 @@ bool IsrRadarFile::renameSource(int year)
 	path p(fileName);
 	char newFileName[MAX_PATH];
 	if (exists(p)) {
-		std::time_t t = boost::filesystem::last_write_time(p);
+		time_t t = boost::filesystem::last_write_time(p);
 		tm *ptm = localtime ( &t );
 		if (p.filename().string().length()==12) { //correct length to rename!
 			string time =p.filename().string().substr(4,4);
@@ -872,7 +872,7 @@ bool IsrRadarFile::renameSource(int year)
 	path oldAfile(afile);
 	oldAfile.replace_extension(".txt");
 	if (exists(oldAfile) && (oldAfile.filename().string().length()==12)) {
-		std::time_t t = boost::filesystem::last_write_time(oldAfile);
+		time_t t = boost::filesystem::last_write_time(oldAfile);
 		tm *ptm = localtime ( &t );
 		string time =oldAfile.filename().string().substr(4,4);
 		string exten =oldAfile.extension().string();
