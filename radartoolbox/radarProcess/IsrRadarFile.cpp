@@ -44,7 +44,8 @@ using namespace boost::filesystem;
 using namespace std;
 
 
-IsrRadarFile::IsrRadarFile(string fileName) {
+IsrRadarFile::IsrRadarFile(string fileName)
+{
 	this->fileName = fileName;
 	filesLoaded =false;
 	readRadarParams();
@@ -68,9 +69,13 @@ bool IsrRadarFile::zipperCheck(int frameIndex)
 	return(false);
 }
 
-void IsrRadarFile::getFrameAngles(int frameIndex,float *frameAngle) {
+
+void IsrRadarFile::getFrameAngles(int frameIndex,float *frameAngle)
+{
 	memcpy(frameAngle,azimuthAngle+(numberOfCollectionsPerRotation*frameIndex),numberOfCollectionsPerRotation*sizeof(float));
 }
+
+
 void IsrRadarFile::getFrame(int frameIndex,float *frameBuffer, double *frameTime, float *frameAngle)
 {
 	const short *framePtr = static_cast<short*>(dataAddress)+10+numberOfCollectionsPerRotation*numberOfRangeBins*frameIndex;
@@ -97,7 +102,9 @@ void IsrRadarFile::getFrame(int frameIndex,float *frameBuffer, double *frameTime
 
 }
 
-void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize) {
+
+void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize)
+{
 	float *frameAngle = new float[numberOfCollectionsPerRotation];
 	getFrameAngles(frameIndex,frameAngle);
 	double interpAngles[1440];
@@ -120,7 +127,8 @@ void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCo
 }
 
 
-void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int interpCount,double stepsize) {
+void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int interpCount,double stepsize)
+{
 	float y0,y1,x,x0,x1;
 	int sumCount =1;
 	interpAngles[0]=0;
@@ -183,6 +191,7 @@ void IsrRadarFile::pushFrameToMatlab(int index)
 	}*/
 }
 
+
 IsrRadarFile::~IsrRadarFile()
 {
 	delete(metaXml);
@@ -195,6 +204,7 @@ IsrRadarFile::~IsrRadarFile()
 	}
 }
 
+
 void IsrRadarFile::zipfiles()
 {
 	string zipFileName =  fileName.substr(0, fileName.length()-3) + "zip";
@@ -205,6 +215,7 @@ void IsrRadarFile::zipfiles()
 	system(zip.c_str());
 	cout << "\n\rzip complete";
 }
+
 
 bool IsrRadarFile::readMetaData()
 {
@@ -274,9 +285,12 @@ bool IsrRadarFile::readMetaData()
 	return(false);
 }
 
-int IsrRadarFile::getFileSize() {
+
+int IsrRadarFile::getFileSize()
+{
 	return(file_size(fileName.c_str()));
 }
+
 
 void IsrRadarFile::makeNetCdfFileName(string productCode, string extension)
 {
@@ -288,7 +302,8 @@ void IsrRadarFile::makeNetCdfFileName(string productCode, string extension)
 	netCdfFileName = string(fn);
 }
 
-bool IsrRadarFile::readMFile() {
+bool IsrRadarFile::readMFile()
+{
 	path p(fileName);
 	m_file = NULL;
 	region = NULL;
@@ -303,13 +318,14 @@ bool IsrRadarFile::readMFile() {
 		return(false);
 }
 
-char * IsrRadarFile::getAzimuthLine(char *source,int *lineBuffer, char *eof) {
+
+char * IsrRadarFile::getAzimuthLine(char *source,int *lineBuffer, char *eof)
+{
 	lineBuffer[0] =0;
 	int numbercount=0;
 	while ((*source==' ') && (source<eof) && (numbercount<6))
 		source++;
-	while ((*source!='\r') && (source<eof) && (numbercount<6))
-	{
+	while ((*source!='\r') && (source<eof) && (numbercount<6)) {
 		if ((*source<'0') ||(*source>'9')) {
 			while (((*source<'0') ||(*source>'9')) && (*source!='\r') && (source<eof))
 				source++;
@@ -327,6 +343,8 @@ char * IsrRadarFile::getAzimuthLine(char *source,int *lineBuffer, char *eof) {
 		source++;
 	return(source+2);
 }
+
+
 bool IsrRadarFile::readAFile()
 {
 	string aFileName =  fileName.substr(0, fileName.length()-3) + "txt";
@@ -392,6 +410,7 @@ bool IsrRadarFile::readAFile()
 	}
 }
 
+
 /*	FILE *fp;
 			int scanCount,shaftCount;
 	char AFileName[MAX_PATH];
@@ -431,8 +450,7 @@ void IsrRadarFile::readRadarParams()
 {
 	numberOfRangeBins = -1;
 	ifstream file (fileName, ios::in|ios::binary|ios::ate);
-	if (file.is_open())
-	{
+	if (file.is_open()) {
 		short *headerblock = new short [10];
 		file.seekg (0, ios::beg);
 		file.read ((char *)headerblock, 20);
@@ -449,7 +467,9 @@ void IsrRadarFile::readRadarParams()
 		cout << "cannot read header!";
 }
 
-void IsrRadarFile::check_err(const int stat, const int line, const char *file) {
+
+void IsrRadarFile::check_err(const int stat, const int line, const char *file)
+{
 	if (stat != NC_NOERR) {
 		(void)fprintf(stderr,"line %d of %s: %s\n", line, file, nc_strerror(stat));
 		fflush(stderr);
@@ -459,13 +479,13 @@ void IsrRadarFile::check_err(const int stat, const int line, const char *file) {
 
 
 void IsrRadarFile::processFile()
-{	cout << "reading metadata\r\n";
+{
+	cout << "reading metadata\r\n";
 	readMetaData();
 	cout << "processing";
 	TiXmlNode *processing =root->FirstChild("processing");
 	TiXmlNode*node;
-	for( node = root->FirstChild("processing")->FirstChildElement(); node; node = node->NextSibling())
-	{
+	for( node = root->FirstChild("processing")->FirstChildElement(); node; node = node->NextSibling()) {
 		if (strcmp(node->Value(),"grid")==0) {
 			if (!filesLoaded)
 				loadBinaryFile();
@@ -644,6 +664,7 @@ void IsrRadarFile::saveAsFixedPolarNetCdfFile(const char *fileName)
 
 }
 
+
 void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int frameCount,int xSize,int ySize,int xOffset, int yOffset,float gridSize,float heading, bool xyCoordinates,bool summedImage,bool outputNcdf,float imageGridSize,float cLim)
 {
 	ILuint texid;
@@ -815,6 +836,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 
 }
 
+
 void IsrRadarFile::sumImageArray(float *meanImage,float *interpframe,int xSize,int ySize,int frameCount)
 {
 	float *meanp = meanImage;
@@ -825,6 +847,7 @@ void IsrRadarFile::sumImageArray(float *meanImage,float *interpframe,int xSize,i
 	}
 }
 
+
 bool IsrRadarFile::renameSource(int year)
 {
 	path p(fileName);
@@ -832,8 +855,7 @@ bool IsrRadarFile::renameSource(int year)
 	if (exists(p)) {
 		std::time_t t = boost::filesystem::last_write_time(p);
 		tm *ptm = localtime ( &t );
-		if (p.filename().string().length()==12) //correct length to rename!
-		{
+		if (p.filename().string().length()==12) { //correct length to rename!
 			string time =p.filename().string().substr(4,4);
 			string exten =p.extension().string();
 			sprintf(newFileName,"%s\\%c%04u%02u%02u%s%s",p.parent_path().string().c_str(),p.filename().string().at(0),ptm->tm_year+1900,
@@ -862,6 +884,7 @@ bool IsrRadarFile::renameSource(int year)
 	return(true);
 }
 
+
 void IsrRadarFile::saveNormalizedMeanJPG(const char *fileName,float *meanImage,bool gridOn,int xSize,int ySize,int pixelSize,int xgrid,int ygrid,float cLim)
 {
 	float *meanp = meanImage;
@@ -881,6 +904,7 @@ void IsrRadarFile::saveNormalizedMeanJPG(const char *fileName,float *meanImage,b
 	ilTexImage( ySize, xSize, 0, 1,IL_LUMINANCE,IL_FLOAT,meanImage);
 	ilSaveImage(fileName);
 }
+
 
 void IsrRadarFile::saveAsSummedImage(const char *fileName,int startFrame, int frameCount,int xSize,int ySize,int xOffset, int yOffset,float gridSize,float heading, float cLim)
 {
