@@ -60,16 +60,17 @@ int main(int argc, char *argv[])
 
 	// We use AnyOption to set and read the command-line arguments.
 	AnyOption *opt = new AnyOption();
-	// set up useage/help with addUsage
+	// set up usage/help with addUsage
 	opt->addUsage( "" );
 	opt->addUsage( "Usage: radarprocess [-y year] [-m:metadata file] [--file binaryfilename]" );
 	opt->addUsage( "" );
 	opt->addUsage( " -h  --help            Prints this help " );
 	opt->addUsage( " -y  --year 2010       force year for naming" );
-	opt->addUsage( " -m  --meta meta.xml   select metadata file (default meta.xml)" );
 	opt->addUsage( " -r  --rename          rename ISR files to a datebased name" );
 	opt->addUsage( " -z  --zip             zip files up into a single file (no compression)" );
 	opt->addUsage( " --file  ISR binary file" );
+	//opt->addUsage( " -m  --meta meta.xml   select metadata file (default metadata.xml)" );
+	//opt->addUsage( " -n  --nav navfile     select nav file
 	opt->addUsage( " " );
 	opt->addUsage( " Assumptions Azimuth file start with A" );
 	opt->addUsage( " Assumptions magnitudes start with M or N" );
@@ -78,13 +79,14 @@ int main(int argc, char *argv[])
 	// Create the possible flags and options
 	opt->setFlag(  "help", 'h' );   // create a flag to show the help with both long (--help) and short (-h) forms
 	opt->setOption(  "year", 'y' ); // an option to set the year, supporting long and short form
-	opt->setOption(  "meta",'m' );  // an option to provide the metadata file, supporting long and short form
-	opt->setOption(  "nav",'n' );   /* an option to provide the navigation file,
-									supporting long and short form (currently unused) */
 	opt->setFlag(  "rename",'r' );  /* a flag that, if set, causes the ISR files (A*.txt, M*.bin) to
 									be renamed to a date-based name. Long and short forms */
 	opt->setFlag(  "zip",'z' );     // a flag to cause the files to be sipped into a single file.
 	opt->setOption(  "file"  );     // option to provide the ISR binary file name. Long form only.
+	//opt->setOption(  "meta",'m' );  // an option to provide the metadata file,
+	//								supporting long and short form (currently unused) */
+	//opt->setOption(  "nav",'n' );   /* an option to provide the navigation file,
+	//								supporting long and short form (currently unused) */
 	opt->processCommandArgs( argc,(char **)  argv ); // Process the command-line arguments with AnyOpt.
 	if (opt->getFlag( "help" ) || opt->getFlag( 'h' ) || (argc == 1 ) ) { // No args or help print option
 		opt->printUsage();
