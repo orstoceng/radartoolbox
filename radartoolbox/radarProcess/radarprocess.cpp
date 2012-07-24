@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	opt->addUsage( "Usage: radarprocess [-y year] [-m:metadata file] [--file binaryfilename]" );
 	opt->addUsage( "" );
 	opt->addUsage( " -h  --help            Prints this help " );
-	opt->addUsage( " -y  --year 2010       force year for naming" );
+	opt->addUsage( " -y  --year 2010       force year for naming (use if mod date year is bad)" );
 	opt->addUsage( " -r  --rename          rename ISR files to a datebased name" );
 	opt->addUsage( " -z  --zip             zip files up into a single file (no compression)" );
 	opt->addUsage( " --file  ISR binary file" );
@@ -102,11 +102,12 @@ int main(int argc, char *argv[])
 		cout << "output:\n\rsourcefile:" << opt->getValue("file") <<"\n\r";
 		path x(opt->getValue("file"));
 		if (exists(x)) {
-			// Create the IsrRadarFile object (calls the constructor).
-			// The file header is read in here
+			
+			// Create the IsrRadarFile object isr.
+			// The bin file header is read in here
 			IsrRadarFile isr(opt->getValue("file"));
 
-			// Rename the binary file, if the rename flag was set.
+			// Rename the bin file, if the rename flag was set.
 			if (opt->getFlag( "rename" ) || opt->getFlag( 'r' )) {
 				// Use the year set in the year option, if provided.
 				if (opt->getValue("year")!=NULL)
@@ -128,10 +129,12 @@ int main(int argc, char *argv[])
 				isr.zipfiles();
 			}
 		} else {
+			// The selected path does not exist
 			cout << "file not found!";
 		}
 
 	} else
+		// no file was provided
 		cout << "need --file filename!";
 
 
