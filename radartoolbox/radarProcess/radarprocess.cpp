@@ -43,15 +43,16 @@
 using namespace std;
 using namespace boost::filesystem;
 
-void DisplayErrorBox(LPTSTR  lpszFunction);
-void MakeNetCdfFile(char *netCdfFileName, short sampleRate, short scans, short bins, short collectionsPerRotation, short rangeGate, short waveSums,TiXmlDocument metaXml);
-void MakeFileName(char *binFileName,char *metaFileName, TCHAR *netCdfFileName);
-void JulianDayToYearMonthDay( const long julianDay, int *year, int *month, int *day );
-long YearMonthDayToJulianDay( const long year, const long month, const long day );
-void readAzimuthFile(TCHAR *binFileName,int *azimuthCount,float *angle, float *time);
-void SplitNameAndPathname( const char*  fullFileName, int length, char *fileName, char *path);
-void GetFileDateTimeStamp(char *fileName,SYSTEMTIME *stUTC,SYSTEMTIME *stLocal);
-void MakeNetCdfFileName(char *fileName,char *basePath,TiXmlDocument metaXml,SYSTEMTIME fileTime);
+// These are the function prototypes for the apparently unused legacy functions at the end of this file. - R. Pittman
+//void DisplayErrorBox(LPTSTR  lpszFunction);
+//void MakeNetCdfFile(char *netCdfFileName, short sampleRate, short scans, short bins, short collectionsPerRotation, short rangeGate, short waveSums,TiXmlDocument metaXml);
+//void MakeFileName(char *binFileName,char *metaFileName, TCHAR *netCdfFileName);
+//void JulianDayToYearMonthDay( const long julianDay, int *year, int *month, int *day );
+//long YearMonthDayToJulianDay( const long year, const long month, const long day );
+//void readAzimuthFile(TCHAR *binFileName,int *azimuthCount,float *angle, float *time);
+//void SplitNameAndPathname( const char*  fullFileName, int length, char *fileName, char *path);
+//void GetFileDateTimeStamp(char *fileName,SYSTEMTIME *stUTC,SYSTEMTIME *stLocal);
+//void MakeNetCdfFileName(char *fileName,char *basePath,TiXmlDocument metaXml,SYSTEMTIME fileTime);
 
 int main(int argc, char *argv[])
 {
