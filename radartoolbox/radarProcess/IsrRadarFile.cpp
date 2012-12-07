@@ -79,11 +79,16 @@ void IsrRadarFile::getFrameAngles(int frameIndex,float *frameAngle)
 
 void IsrRadarFile::getFrame(int frameIndex,float *frameBuffer, double *frameTime, float *frameAngle)
 {
+	// Set the frame pointer to the start of the current frame in the binary file
+	// (dataAddress points to the start of the memory-mapped binary file)
 	const short *framePtr = static_cast<short*>(dataAddress)+10+numberOfCollectionsPerRotation*numberOfRangeBins*frameIndex;
-	if (framePtr<static_cast<short*>(dataAddress)+dataSize-(numberOfCollectionsPerRotation*numberOfRangeBins)) {
+	// Make sure the frame pointer has not moved past the end of the data
+	if (framePtr < (static_cast<short*>(dataAddress) + dataSize - (numberOfCollectionsPerRotation*numberOfRangeBins) ) ) {
+		// go through each azimuth ("collection") in the frame
 		for (int i=0; i<numberOfCollectionsPerRotation; i++) {
 			// check for zipper
-			if (*(framePtr+(i*numberOfRangeBins)+18)!=0) { // zipper found
+			// If the 19th sample of the azimuth is not zero, then the zipper effect is present
+			if (*(framePtr+(i*numberOfRangeBins) + 18) != 0) { // zipper found
 				for (int k=0; k<(numberOfRangeBins-doughNut-4); k++)
 					frameBuffer[(i*(numberOfRangeBins-doughNut))+k] =(float)framePtr[(i*numberOfRangeBins)+doughNut-4+k];
 				for (int z =numberOfRangeBins-doughNut-4; z<(numberOfRangeBins-doughNut); z++)
@@ -342,7 +347,8 @@ char * IsrRadarFile::getAzimuthLine(char *source,int *lineBuffer, char *eof)
 			lineBuffer[i] =-999;
 	while ((*source!='\r') && (source<eof))
 		source++;
-	return(source+2);
+	source += 2;
+	return(source);
 }
 
 

@@ -1,4 +1,16 @@
+/*******************************************************************************
+	Program:		Radar Process
+
+	File:			GpuGrid.cu
+
+	Function:		CUDA functions for gridding radar data
+
+	Description:	TODO - add general description of what the functions do, as
+					a whole, here.
+
+*******************************************************************************/
 //
+
 #include "cuda.h"
 #include <cuda_runtime.h>
 #include "device_launch_parameters.h"
@@ -31,6 +43,7 @@ __global__ void interpPolerKernel(float* output, int width, int height,short *az
 	//	output[y*width + x] = tex2D(texRefPolar, (float)x, (float)y) ;
 }
 
+
 __global__ void interpCartKernel(float* output, int width, int height, float antennaHieght,int xOffset,int yOffset, float heading, float gridSize, float rangeBinSize, float angleStepInRadians,float maxrange,bool tvg, int maxAzimuthBin)
 {	// Calculate normalized texture coordinates
 	unsigned int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -49,6 +62,7 @@ __global__ void interpCartKernel(float* output, int width, int height, float ant
 
 	}
 }
+
 
 __global__ void gpuinterpolateAngles(float *output, float *frameAngle, int numberOfAngleBins, float angleStep)
 {
@@ -70,7 +84,6 @@ __global__ void gpuinterpolateAngles(float *output, float *frameAngle, int numbe
 	}
 
 }
-
 
 
 GpuGrid::GpuGrid(int collections, int rangeBins, float step,int xSize,int ySize,float sampleRate, bool applyTvg)
@@ -104,6 +117,7 @@ GpuGrid::GpuGrid(int collections, int rangeBins, float step,int xSize,int ySize,
 
 }
 
+
 GpuGrid::~GpuGrid()
 {
 	// free the Host stuff
@@ -124,14 +138,17 @@ GpuGrid::~GpuGrid()
 
 }
 
+
 void GpuGrid::cpyFrame(short *source)
 {
 	// memcpy(rawFrameBuffer,source,numberOfCollectionsPerRotation*numberOfRangeBins*sizeof(short));
 }
 
+
 void GpuGrid::cpyAngles(float *source) {
 	// memcpy(rawAngleBuffer,source,numberOfCollectionsPerRotation*sizeof(float));
 }
+
 
 void GpuGrid::interpolateAngles(float *frameAngle)
 {
@@ -164,8 +181,6 @@ void GpuGrid::interpolateAngles(float *frameAngle)
 	//	cudaPrintfEnd();
 
 }
-
-
 
 
 float *GpuGrid::interpolatePolarFrame(float *sourceFrame,float *collectionAngles)
@@ -248,9 +263,6 @@ float *GpuGrid::interpolateCartFrame(float *sourceFrame,float *collectionAngles,
 	}
 	return(NULL);
 }
-
-
-
 
 
 int GpuGrid::initGPU()
