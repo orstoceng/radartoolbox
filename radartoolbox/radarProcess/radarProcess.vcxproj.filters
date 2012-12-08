@@ -19,9 +19,15 @@
     <ClCompile Include="tinyxmlerror.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\netcdf-4.1.3\cxx\ncvalues.cpp" />
-    <ClCompile Include="..\netcdf-4.1.3\cxx\netcdf.cpp" />
-    <ClCompile Include="IsrRadarFile.cpp" />
+    <ClCompile Include="IsrRadarFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\netcdf-4.1.3\cxx\ncvalues.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\netcdf-4.1.3\cxx\netcdf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="anyoption.h">
@@ -51,8 +57,12 @@
     <ClInclude Include="config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\netcdf-4.1.3\cxx\netcdfcpp.h" />
-    <ClInclude Include="IsrRadarFile.h" />
+    <ClInclude Include="IsrRadarFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\netcdf-4.1.3\cxx\netcdfcpp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
