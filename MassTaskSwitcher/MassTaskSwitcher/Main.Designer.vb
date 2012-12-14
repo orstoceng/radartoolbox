@@ -36,6 +36,7 @@ Partial Class Main
         Me.btnEnableAll = New System.Windows.Forms.Button()
         Me.btnIgnoredTasks = New System.Windows.Forms.Button()
         Me.lblInstructions = New System.Windows.Forms.Label()
+        Me.btnEditSelected = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lvTasks
@@ -50,7 +51,7 @@ Partial Class Main
         Me.lvTasks.Items.AddRange(New System.Windows.Forms.ListViewItem() {ListViewItem1})
         Me.lvTasks.Location = New System.Drawing.Point(12, 76)
         Me.lvTasks.Name = "lvTasks"
-        Me.lvTasks.Size = New System.Drawing.Size(621, 254)
+        Me.lvTasks.Size = New System.Drawing.Size(621, 277)
         Me.lvTasks.TabIndex = 0
         Me.lvTasks.UseCompatibleStateImageBehavior = False
         Me.lvTasks.View = System.Windows.Forms.View.Details
@@ -81,7 +82,7 @@ Partial Class Main
         'btnDisableAll
         '
         Me.btnDisableAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnDisableAll.Location = New System.Drawing.Point(131, 336)
+        Me.btnDisableAll.Location = New System.Drawing.Point(129, 402)
         Me.btnDisableAll.Name = "btnDisableAll"
         Me.btnDisableAll.Size = New System.Drawing.Size(111, 37)
         Me.btnDisableAll.TabIndex = 2
@@ -91,7 +92,7 @@ Partial Class Main
         'btnClose
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClose.Location = New System.Drawing.Point(522, 336)
+        Me.btnClose.Location = New System.Drawing.Point(522, 402)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(111, 37)
         Me.btnClose.TabIndex = 2
@@ -101,7 +102,7 @@ Partial Class Main
         'btnEnableAll
         '
         Me.btnEnableAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnEnableAll.Location = New System.Drawing.Point(14, 336)
+        Me.btnEnableAll.Location = New System.Drawing.Point(12, 402)
         Me.btnEnableAll.Name = "btnEnableAll"
         Me.btnEnableAll.Size = New System.Drawing.Size(111, 37)
         Me.btnEnableAll.TabIndex = 2
@@ -110,8 +111,8 @@ Partial Class Main
         '
         'btnIgnoredTasks
         '
-        Me.btnIgnoredTasks.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnIgnoredTasks.Location = New System.Drawing.Point(248, 336)
+        Me.btnIgnoredTasks.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnIgnoredTasks.Location = New System.Drawing.Point(475, 359)
         Me.btnIgnoredTasks.Name = "btnIgnoredTasks"
         Me.btnIgnoredTasks.Size = New System.Drawing.Size(158, 37)
         Me.btnIgnoredTasks.TabIndex = 2
@@ -121,17 +122,28 @@ Partial Class Main
         'lblInstructions
         '
         Me.lblInstructions.AutoSize = True
-        Me.lblInstructions.Location = New System.Drawing.Point(12, 9)
+        Me.lblInstructions.Location = New System.Drawing.Point(9, 9)
         Me.lblInstructions.Name = "lblInstructions"
         Me.lblInstructions.Size = New System.Drawing.Size(431, 52)
         Me.lblInstructions.TabIndex = 3
         Me.lblInstructions.Text = resources.GetString("lblInstructions.Text")
         '
+        'btnEditSelected
+        '
+        Me.btnEditSelected.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnEditSelected.Location = New System.Drawing.Point(12, 359)
+        Me.btnEditSelected.Name = "btnEditSelected"
+        Me.btnEditSelected.Size = New System.Drawing.Size(111, 37)
+        Me.btnEditSelected.TabIndex = 4
+        Me.btnEditSelected.Text = "Edit Selected"
+        Me.btnEditSelected.UseVisualStyleBackColor = True
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(645, 382)
+        Me.ClientSize = New System.Drawing.Size(645, 448)
+        Me.Controls.Add(Me.btnEditSelected)
         Me.Controls.Add(Me.lblInstructions)
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.btnIgnoredTasks)
@@ -155,4 +167,5 @@ Partial Class Main
     Friend WithEvents btnEnableAll As System.Windows.Forms.Button
     Friend WithEvents btnIgnoredTasks As System.Windows.Forms.Button
     Friend WithEvents lblInstructions As System.Windows.Forms.Label
+    Friend WithEvents btnEditSelected As System.Windows.Forms.Button
 End Class

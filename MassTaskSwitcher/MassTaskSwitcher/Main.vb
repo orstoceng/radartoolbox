@@ -70,7 +70,7 @@ Public Class Main
 
         ReadIgnoredTasksFile()
         InitList()
-        Timer1.Interval = 200 ' Check for updates ever 200 ms
+        Timer1.Interval = 200 ' Check for updates every 200 ms
         Timer1.Start()
     End Sub
 
@@ -81,24 +81,25 @@ Public Class Main
             WriteDaqLogEntry(logEntry)
         End If
         ' Find each unchecked ListViewItem, then check it and enable the corresponding task
-        Dim ts As New TaskService
-        For Each li As ListViewItem In lvTasks.Items
-            If Not li.Tag.Equals("ignore") Then
-                If Not li.Checked Then
-                    ' Note: We do *not* disable the filtering of the Check event here. Clicking "Enable All" should not enable the "ignored" items
-                    li.Checked = True
-                    Try
-                        ts.RootFolder.Tasks.Item(li.Name).Enabled = li.Checked
-                    Catch noAccess As System.UnauthorizedAccessException
-                        ' If we can't change a task, just send a message to the user
-                        MsgBox("You do not have access to enable or disable the task " + li.Name + ".")
-                    Catch ex As Exception
-                        ' Rethrow other errors
-                        Throw ex
-                    End Try
+        Using ts As New TaskService
+            For Each li As ListViewItem In lvTasks.Items
+                If Not li.Tag.Equals("ignore") Then
+                    If Not li.Checked Then
+                        ' Note: We do *not* disable the filtering of the Check event here. Clicking "Enable All" should not enable the "ignored" items
+                        li.Checked = True
+                        Try
+                            ts.RootFolder.Tasks.Item(li.Name).Enabled = li.Checked
+                        Catch noAccess As System.UnauthorizedAccessException
+                            ' If we can't change a task, just send a message to the user
+                            MsgBox("You do not have access to enable or disable the task " + li.Name + ".")
+                        Catch ex As Exception
+                            ' Rethrow other errors
+                            Throw ex
+                        End Try
+                    End If
                 End If
-            End If
-        Next
+            Next
+        End Using
     End Sub
 
     ' "Disable all" button is clicked
@@ -108,24 +109,25 @@ Public Class Main
             WriteDaqLogEntry(logEntry)
         End If
         ' Find each unchecked ListViewItem, then check it and enable the corresponding task
-        Dim ts As New TaskService
-        For Each li As ListViewItem In lvTasks.Items
-            If Not li.Tag.Equals("ignore") Then
-                If li.Checked Then
-                    ' Note: We do *not* disable the filtering of the Check event here. Clicking "Disable All" should not disable the "ignored" items
-                    li.Checked = False
-                    Try
-                        ts.RootFolder.Tasks.Item(li.Name).Enabled = li.Checked
-                    Catch noAccess As System.UnauthorizedAccessException
-                        ' If we can't change a task, just send a message to the user
-                        MsgBox("You do not have access to enable or disable the task " + li.Name + ".")
-                    Catch ex As Exception
-                        ' Rethrow other errors
-                        Throw ex
-                    End Try
+        Using ts As New TaskService
+            For Each li As ListViewItem In lvTasks.Items
+                If Not li.Tag.Equals("ignore") Then
+                    If li.Checked Then
+                        ' Note: We do *not* disable the filtering of the Check event here. Clicking "Disable All" should not disable the "ignored" items
+                        li.Checked = False
+                        Try
+                            ts.RootFolder.Tasks.Item(li.Name).Enabled = li.Checked
+                        Catch noAccess As System.UnauthorizedAccessException
+                            ' If we can't change a task, just send a message to the user
+                            MsgBox("You do not have access to enable or disable the task " + li.Name + ".")
+                        Catch ex As Exception
+                            ' Rethrow other errors
+                            Throw ex
+                        End Try
+                    End If
                 End If
-            End If
-        Next
+            Next
+        End Using
     End Sub
 
     ' "Select Tasks to Not Change" button is clicked
@@ -153,17 +155,33 @@ Public Class Main
     Private Sub lvTasks_ItemChecked(sender As Object, e As System.Windows.Forms.ItemCheckedEventArgs) Handles lvTasks.ItemChecked
         ' There is a check here to make sure this is not run when the list is intializing, because if it does it causes runtime errors.
         If Not DisableCheckChecker Then
-            Dim ts As New TaskService
-            Try
-                ts.RootFolder.Tasks.Item(e.Item.Name).Enabled = e.Item.Checked
-            Catch noAccess As System.UnauthorizedAccessException
-                ' If we can't change a task, just send a message to the user
-                MsgBox("You do not have access to enable or disable the task " + e.Item.Name + ".")
-            Catch ex As Exception
-                ' Rethrow other errors
-                Throw ex
-            End Try
+            Using ts As New TaskService
+                Try
+                    ts.RootFolder.Tasks.Item(e.Item.Name).Enabled = e.Item.Checked
+                Catch noAccess As System.UnauthorizedAccessException
+                    ' If we can't change a task, just send a message to the user
+                    MsgBox("You do not have access to enable or disable the task " + e.Item.Name + ".")
+                Catch ex As Exception
+                    ' Rethrow other errors
+                    Throw ex
+                End Try
+            End Using
         End If
+    End Sub
+
+    Private Sub btnEditSelected_Click(sender As System.Object, e As System.EventArgs) Handles btnEditSelected.Click
+        Using ts As New TaskService, tskEdDlg As New TaskEditDialog()
+            tskEdDlg.Editable = True
+            tskEdDlg.RegisterTaskOnAccept = True
+            For Each li As ListViewItem In lvTasks.SelectedItems
+                Try
+                    tskEdDlg.Initialize(ts.RootFolder.Tasks.Item(li.Name))
+                    tskEdDlg.ShowDialog()
+                Catch ex As System.UnauthorizedAccessException
+                    MsgBox("You do not have permission to modify the task " + li.Name + ".")
+                End Try
+            Next
+        End Using
     End Sub
 
     ' Timer1 tick elapses
@@ -178,21 +196,22 @@ Public Class Main
     ' Update the global tsTaskDict with the tasks from the Task Scheduler
     Private Sub GetTaskServiceTasks()
         tsTaskDict.Clear()
-        Dim ts As New TaskService
-        For Each tsk As Task In ts.RootFolder.Tasks
-            Dim st As simpleTask
-            st.name = tsk.Name
-            st.state = tsk.State
-            st.enabled = tsk.Enabled
-            st.lastRun = tsk.LastRunTime
-            st.nextRun = tsk.NextRunTime
-            If ignoredTasks.Contains(tsk.Name) Or tsk.Definition.Principal.UserId Is Nothing Then
-                st.ignore = True
-            Else
-                st.ignore = False
-            End If
-            tsTaskDict.Add(tsk.Name, st)
-        Next
+        Using ts As New TaskService
+            For Each tsk As Task In ts.RootFolder.Tasks
+                Dim st As simpleTask
+                st.name = tsk.Name
+                st.state = tsk.State
+                st.enabled = tsk.Enabled
+                st.lastRun = tsk.LastRunTime
+                st.nextRun = tsk.NextRunTime
+                If ignoredTasks.Contains(tsk.Name) Or tsk.Definition.Principal.UserId Is Nothing Then
+                    st.ignore = True
+                Else
+                    st.ignore = False
+                End If
+                tsTaskDict.Add(tsk.Name, st)
+            Next
+        End Using
     End Sub
 
     ' Get the tasks in the current ListView and save them to lvTaskDict
