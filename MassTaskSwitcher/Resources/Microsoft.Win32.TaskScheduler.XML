@@ -254,6 +254,12 @@
         <member name="F:Microsoft.Win32.TaskScheduler.TaskCompatibility.V2">
             <summary>The task is compatible with Task Scheduler 2.0.</summary>
         </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskCompatibility.V2_1">
+            <summary>The task is compatible with Task Scheduler 2.1.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskCompatibility.V2_2">
+            <summary>The task is compatible with Task Scheduler 2.2.</summary>
+        </member>
         <member name="T:Microsoft.Win32.TaskScheduler.TaskCreation">
             <summary>Defines how the Task Scheduler service creates, updates, or disables the task.</summary>
         </member>
@@ -316,6 +322,114 @@
         </member>
         <member name="F:Microsoft.Win32.TaskScheduler.TaskLogonType.InteractiveTokenOrPassword">
             <summary>First use the interactive token. If the user is not logged on (no interactive token is available), then the password is used. The password must be specified when a task is registered. This flag is not recommended for new tasks because it is less reliable than Password.</summary>
+        </member>
+        <member name="T:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege">
+            <summary>Defines which privileges must be required for a secured task.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeCreateTokenPrivilege">
+            <summary>Required to create a primary token. User Right: Create a token object.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeAssignPrimaryTokenPrivilege">
+            <summary>Required to assign the primary token of a process. User Right: Replace a process-level token.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeLockMemoryPrivilege">
+            <summary>Required to lock physical pages in memory. User Right: Lock pages in memory. </summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeIncreaseQuotaPrivilege">
+            <summary>Required to increase the quota assigned to a process. User Right: Adjust memory quotas for a process.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeUnsolicitedInputPrivilege">
+            <summary>Required to read unsolicited input from a terminal device. User Right: Not applicable.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeMachineAccountPrivilege">
+            <summary>Required to create a computer account. User Right: Add workstations to domain. </summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeTcbPrivilege">
+            <summary>This privilege identifies its holder as part of the trusted computer base. Some trusted protected subsystems are granted this privilege. User Right: Act as part of the operating system.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeSecurityPrivilege">
+            <summary>Required to perform a number of security-related functions, such as controlling and viewing audit messages. This privilege identifies its holder as a security operator. User Right: Manage auditing and the security log.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeTakeOwnershipPrivilege">
+            <summary>Required to take ownership of an object without being granted discretionary access. This privilege allows the owner value to be set only to those values that the holder may legitimately assign as the owner of an object. User Right: Take ownership of files or other objects.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeLoadDriverPrivilege">
+            <summary>Required to load or unload a device driver. User Right: Load and unload device drivers.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeSystemProfilePrivilege">
+            <summary>Required to gather profiling information for the entire system. User Right: Profile system performance.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeSystemtimePrivilege">
+            <summary>Required to modify the system time. User Right: Change the system time. </summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeProfileSingleProcessPrivilege">
+            <summary>Required to gather profiling information for a single process. User Right: Profile single process.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeIncreaseBasePriorityPrivilege">
+            <summary>Required to increase the base priority of a process. User Right: Increase scheduling priority.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeCreatePagefilePrivilege">
+            <summary>Required to create a paging file. User Right: Create a pagefile. </summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeCreatePermanentPrivilege">
+            <summary>Required to create a permanent object. User Right: Create permanent shared objects.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeBackupPrivilege">
+            <summary>Required to perform backup operations. This privilege causes the system to grant all read access control to any file, regardless of the access control list (ACL) specified for the file. Any access request other than read is still evaluated with the ACL. This privilege is required by the RegSaveKey and RegSaveKeyExfunctions. The following access rights are granted if this privilege is held: READ_CONTROL, ACCESS_SYSTEM_SECURITY, FILE_GENERIC_READ, FILE_TRAVERSE. User Right: Back up files and directories.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeRestorePrivilege">
+            <summary>Required to perform restore operations. This privilege causes the system to grant all write access control to any file, regardless of the ACL specified for the file. Any access request other than write is still evaluated with the ACL. Additionally, this privilege enables you to set any valid user or group security identifier (SID) as the owner of a file. This privilege is required by the RegLoadKey function. The following access rights are granted if this privilege is held: WRITE_DAC, WRITE_OWNER, ACCESS_SYSTEM_SECURITY, FILE_GENERIC_WRITE, FILE_ADD_FILE, FILE_ADD_SUBDIRECTORY, DELETE. User Right: Restore files and directories.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeShutdownPrivilege">
+            <summary>Required to shut down a local system. User Right: Shut down the system. </summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeDebugPrivilege">
+            <summary>Required to debug and adjust the memory of a process owned by another account. User Right: Debug programs.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeAuditPrivilege">
+            <summary>Required to generate audit-log entries. Give this privilege to secure servers. User Right: Generate security audits.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeSystemEnvironmentPrivilege">
+            <summary>Required to modify the nonvolatile RAM of systems that use this type of memory to store configuration information. User Right: Modify firmware environment values.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeChangeNotifyPrivilege">
+            <summary>Required to receive notifications of changes to files or directories. This privilege also causes the system to skip all traversal access checks. It is enabled by default for all users. User Right: Bypass traverse checking.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeRemoteShutdownPrivilege">
+            <summary>Required to shut down a system by using a network request. User Right: Force shutdown from a remote system.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeUndockPrivilege">
+            <summary>Required to undock a laptop. User Right: Remove computer from docking station. </summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeSyncAgentPrivilege">
+            <summary>Required for a domain controller to use the LDAP directory synchronization services. This privilege allows the holder to read all objects and properties in the directory, regardless of the protection on the objects and properties. By default, it is assigned to the Administrator and LocalSystem accounts on domain controllers. User Right: Synchronize directory service data.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeEnableDelegationPrivilege">
+            <summary>Required to mark user and computer accounts as trusted for delegation. User Right: Enable computer and user accounts to be trusted for delegation.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeManageVolumePrivilege">
+            <summary>Required to enable volume management privileges. User Right: Manage the files on a volume.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeImpersonatePrivilege">
+            <summary>Required to impersonate. User Right: Impersonate a client after authentication. Windows XP/2000: This privilege is not supported. Note that this value is supported starting with Windows Server 2003, Windows XP with SP2, and Windows 2000 with SP4.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeCreateGlobalPrivilege">
+            <summary>Required to create named file mapping objects in the global namespace during Terminal Services sessions. This privilege is enabled by default for administrators, services, and the local system account. User Right: Create global objects. Windows XP/2000: This privilege is not supported. Note that this value is supported starting with Windows Server 2003, Windows XP with SP2, and Windows 2000 with SP4.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeTrustedCredManAccessPrivilege">
+            <summary>Required to access Credential Manager as a trusted caller. User Right: Access Credential Manager as a trusted caller.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeRelabelPrivilege">
+            <summary>Required to modify the mandatory integrity level of an object. User Right: Modify an object label.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeIncreaseWorkingSetPrivilege">
+            <summary>Required to allocate more memory for applications that run in the context of users. User Right: Increase a process working set.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeTimeZonePrivilege">
+            <summary>Required to adjust the time zone associated with the computer's internal clock. User Right: Change the time zone.</summary>
+        </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege.SeCreateSymbolicLinkPrivilege">
+            <summary>Required to create a symbolic link. User Right: Create symbolic links.</summary>
         </member>
         <member name="T:Microsoft.Win32.TaskScheduler.TaskProcessTokenSidType">
             <summary>Defines the types of process security identifier (SID) that can be used by tasks. These changes are used to specify the type of process SID in the IPrincipal2 interface.</summary>
@@ -423,6 +537,31 @@
         <member name="P:Microsoft.Win32.TaskScheduler.IdleSettings.WaitTimeout">
             <summary>
             Gets or sets a value that indicates the amount of time that the Task Scheduler will wait for an idle condition to occur.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Win32.TaskScheduler.MaintenanceSettings">
+            <summary>
+            Specifies the task settings the Task scheduler will use to start task during Automatic maintenance.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.MaintenanceSettings.Dispose">
+            <summary>
+            Releases all resources used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.MaintenanceSettings.Deadline">
+            <summary>
+            Gets or sets the amount of time after which the Task scheduler attempts to run the task during emergency Automatic maintenance, if the task failed to complete during regular Automatic maintenance. The minimum value is one day. The value of the <see cref="P:Microsoft.Win32.TaskScheduler.MaintenanceSettings.Deadline"/> property should be greater than the value of the <see cref="P:Microsoft.Win32.TaskScheduler.MaintenanceSettings.Period"/> property. If the deadline is not specified the task will not be started during emergency Automatic maintenance. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.MaintenanceSettings.Exclusive">
+            <summary>
+            Gets or sets a valud indicating whether the Task Scheduler must start the task during the Automatic maintenance in exclusive mode. The exclusivity is guaranteed only between other maintenance tasks and doesn't grant any ordering priority of the task. If exclusivity is not specified, the task is started in parallel with other maintenance tasks.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.MaintenanceSettings.Period">
+            <summary>
+            Gets or sets the amount of time the task needs to be started during Automatic maintenance. The minimum value is one minute.
             </summary>
         </member>
         <member name="T:Microsoft.Win32.TaskScheduler.NetworkSettings">
@@ -558,6 +697,14 @@
             </summary>
             <remarks>As of version 1.8.1, under V1 systems (prior to Vista), this method will immediately set the enabled property and re-save the current task. If changes have been made to the <see cref="T:Microsoft.Win32.TaskScheduler.TaskDefinition"/>, then those changes will be saved.</remarks>
         </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.Task.IsActive">
+            <summary>
+            Gets a value indicating whether this task instance is active.
+            </summary>
+            <value>
+              <c>true</c> if this task instance is active; otherwise, <c>false</c>.
+            </value>
+        </member>
         <member name="P:Microsoft.Win32.TaskScheduler.Task.LastRunTime">
             <summary>
             Gets the time the registered task was last run.
@@ -655,6 +802,13 @@
             Defines all the components of a task, such as the task settings, triggers, actions, and registration information.
             </summary>
         </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskDefinition.CanUseUnifiedSchedulingEngine(System.Boolean)">
+            <summary>
+            Determines whether this <see cref="T:Microsoft.Win32.TaskScheduler.TaskDefinition"/> can use the Unified Scheduling Engine or if it contains unsupported properties.
+            </summary>
+            <param name="throwExceptionWithDetails">if set to <c>true</c> throws an <see cref="T:System.InvalidOperationException"/> with details about unsupported properties in the Data property of the exception.</param>
+            <returns><c>true</c> if this this <see cref="T:Microsoft.Win32.TaskScheduler.TaskDefinition"/> can use the Unified Scheduling Engine; otherwise, <c>false</c>.</returns>
+        </member>
         <member name="M:Microsoft.Win32.TaskScheduler.TaskDefinition.Dispose">
             <summary>
             Releases all resources used by this class.
@@ -667,6 +821,13 @@
             <param name="xs">The <see cref="T:System.Xml.Schema.XmlSchemaSet"/> for V1 tasks.</param>
             <returns>An object containing the Xml Schema for V1 tasks.</returns>
         </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskDefinition.Validate(System.Boolean)">
+            <summary>
+            Validates the current <see cref="T:Microsoft.Win32.TaskScheduler.TaskDefinition"/>.
+            </summary>
+            <param name="throwException">if set to <c>true</c> throw a <see cref="T:System.InvalidOperationException"/> with details about invalid properties.</param>
+            <returns><c>true</c> if current <see cref="T:Microsoft.Win32.TaskScheduler.TaskDefinition"/> is valid; <c>false</c> if not.</returns>
+        </member>
         <member name="P:Microsoft.Win32.TaskScheduler.TaskDefinition.Actions">
             <summary>
             Gets a collection of actions that are performed by the task.
@@ -675,6 +836,11 @@
         <member name="P:Microsoft.Win32.TaskScheduler.TaskDefinition.Data">
             <summary>
             Gets or sets the data that is associated with the task. This data is ignored by the Task Scheduler service, but is used by third-parties who wish to extend the task format.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.TaskDefinition.LowestSupportedVersion">
+            <summary>
+            Gets the lowest supported version that supports the settings for this <see cref="T:Microsoft.Win32.TaskScheduler.TaskDefinition"/>.
             </summary>
         </member>
         <member name="P:Microsoft.Win32.TaskScheduler.TaskDefinition.Principal">
@@ -719,6 +885,14 @@
             <returns>
             A <see cref="T:System.String"/> that represents this instance.
             </returns>
+        </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipal.ValidateAccountForSidType(System.String,Microsoft.Win32.TaskScheduler.TaskProcessTokenSidType)">
+            <summary>
+            Validates the supplied account against the supplied <see cref="T:Microsoft.Win32.TaskScheduler.TaskProcessTokenSidType"/>.
+            </summary>
+            <param name="acct">The user or group account name.</param>
+            <param name="sidType">The SID type for the process.</param>
+            <returns><c>true</c> if supplied account can be used for the supplied SID type.</returns>
         </member>
         <member name="P:Microsoft.Win32.TaskScheduler.TaskPrincipal.DisplayName">
             <summary>
@@ -770,7 +944,7 @@
             List of security credentials for a principal under version 1.3 of the Task Scheduler. These security credentials define the security context for the tasks that are associated with the principal.
             </summary>
         </member>
-        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.IndexOf(System.String)">
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.IndexOf(Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege)">
             <summary>
             Determines the index of a specific item in the <see cref="T:System.Collections.Generic.IList`1"/>.
             </summary>
@@ -779,7 +953,7 @@
             The index of <paramref name="item"/> if found in the list; otherwise, -1.
             </returns>
         </member>
-        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Insert(System.Int32,System.String)">
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Insert(System.Int32,Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege)">
             <summary>
             Inserts an item to the <see cref="T:System.Collections.Generic.IList`1"/> at the specified index.
             </summary>
@@ -804,7 +978,7 @@
             The <see cref="T:System.Collections.Generic.IList`1"/> is read-only.
               </exception>
         </member>
-        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Add(System.String)">
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Add(Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege)">
             <summary>
             Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
             </summary>
@@ -821,7 +995,7 @@
             The <see cref="T:System.Collections.Generic.ICollection`1"/> is read-only.
               </exception>
         </member>
-        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Contains(System.String)">
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Contains(Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege)">
             <summary>
             Determines whether the <see cref="T:System.Collections.Generic.ICollection`1"/> contains a specific value.
             </summary>
@@ -830,14 +1004,14 @@
             true if <paramref name="item"/> is found in the <see cref="T:System.Collections.Generic.ICollection`1"/>; otherwise, false.
             </returns>
         </member>
-        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.CopyTo(System.String[],System.Int32)">
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.CopyTo(Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege[],System.Int32)">
             <summary>
             Copies to.
             </summary>
             <param name="array">The array.</param>
             <param name="arrayIndex">Index of the array.</param>
         </member>
-        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Remove(System.String)">
+        <member name="M:Microsoft.Win32.TaskScheduler.TaskPrincipalPrivileges.Remove(Microsoft.Win32.TaskScheduler.TaskPrincipalPrivilege)">
             <summary>
             Removes the first occurrence of a specific object from the <see cref="T:System.Collections.Generic.ICollection`1"/>.
             </summary>
@@ -1048,6 +1222,11 @@
             Gets or sets the information that specifies how the Task Scheduler performs tasks when the computer is in an idle state.
             </summary>
         </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.TaskSettings.MaintenanceSettings">
+            <summary>
+            Gets or sets the information that the Task Scheduler uses during Automatic maintenance.
+            </summary>
+        </member>
         <member name="P:Microsoft.Win32.TaskScheduler.TaskSettings.MultipleInstances">
             <summary>
             Gets or sets the policy that defines how the Task Scheduler handles multiple instances of the task.
@@ -1101,6 +1280,11 @@
         <member name="P:Microsoft.Win32.TaskScheduler.TaskSettings.UseUnifiedSchedulingEngine">
             <summary>
             Gets or sets a Boolean value that indicates that the Unified Scheduling Engine will be utilized to run this task.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.TaskSettings.Volatile">
+            <summary>
+            Gets or sets a boolean value that indicates whether the task is automatically disabled every time Windows starts.
             </summary>
         </member>
         <member name="P:Microsoft.Win32.TaskScheduler.TaskSettings.WakeToRun">
@@ -1159,6 +1343,15 @@
             <summary>
             Clears all triggers from the task.
             </summary>
+        </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.TriggerCollection.ContainsType(System.Type)">
+            <summary>
+            Determines whether the specified trigger type is contained in this collection.
+            </summary>
+            <param name="triggerType">Type of the trigger.</param>
+            <returns>
+              <c>true</c> if the specified trigger type is contained in this collection; otherwise, <c>false</c>.
+            </returns>
         </member>
         <member name="M:Microsoft.Win32.TaskScheduler.TriggerCollection.Insert(System.Int32,Microsoft.Win32.TaskScheduler.Trigger)">
             <summary>
@@ -1832,6 +2025,15 @@
             Clears all actions from the task.
             </summary>
         </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.ActionCollection.ContainsType(System.Type)">
+            <summary>
+            Determines whether the specified action type is contained in this collection.
+            </summary>
+            <param name="actionType">Type of the action.</param>
+            <returns>
+              <c>true</c> if the specified action type is contained in this collection; otherwise, <c>false</c>.
+            </returns>
+        </member>
         <member name="M:Microsoft.Win32.TaskScheduler.ActionCollection.Insert(System.Int32,Microsoft.Win32.TaskScheduler.Action)">
             <summary>
             Inserts an action at the specified index.
@@ -2184,9 +2386,17 @@
             Abstract class for throwing a method specific exception.
             </summary>
         </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TSNotSupportedException.min">
+            <summary>Defines the minimum supported version for the action not allowed by this exception.</summary>
+        </member>
         <member name="P:Microsoft.Win32.TaskScheduler.TSNotSupportedException.Message">
             <summary>
             Gets a message that describes the current exception.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Win32.TaskScheduler.TSNotSupportedException.MinimumSupportedVersion">
+            <summary>
+            Gets the minimum supported TaskScheduler version required for this method or property.
             </summary>
         </member>
         <member name="T:Microsoft.Win32.TaskScheduler.NotV1SupportedException">
@@ -2196,7 +2406,12 @@
         </member>
         <member name="T:Microsoft.Win32.TaskScheduler.NotV2SupportedException">
             <summary>
-            Thrown when the calling method is not supported by Task Scheduler 1.0.
+            Thrown when the calling method is not supported by Task Scheduler 2.0.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Win32.TaskScheduler.NotSupportedPriorToException">
+            <summary>
+            Thrown when the calling method is not supported by Task Scheduler versions prior to the one specified.
             </summary>
         </member>
         <member name="T:Microsoft.Win32.TaskScheduler.Wildcard">
@@ -2579,6 +2794,9 @@
         <member name="F:Microsoft.Win32.TaskScheduler.TaskTriggerType.SessionStateChange">
             <summary>Triggers the task when a specific user session state changes. Version 1.2 only.</summary>
         </member>
+        <member name="F:Microsoft.Win32.TaskScheduler.TaskTriggerType.CustomTrigger">
+            <summary>Triggers the custom trigger. Version 1.3 only.</summary>
+        </member>
         <member name="T:Microsoft.Win32.TaskScheduler.WhichWeek">
             <summary>Values for week of month (first, second, ..., last)</summary>
         </member>
@@ -2599,6 +2817,11 @@
         </member>
         <member name="F:Microsoft.Win32.TaskScheduler.WhichWeek.AllWeeks">
             <summary>Every week of the month</summary>
+        </member>
+        <member name="T:Microsoft.Win32.TaskScheduler.ICalendarTrigger">
+            <summary>
+            Interface that categorizes the trigger as a calendar trigger.
+            </summary>
         </member>
         <member name="T:Microsoft.Win32.TaskScheduler.ITriggerDelay">
             <summary>
@@ -3095,6 +3318,14 @@
             Releases all resources used by this class.
             </summary>
         </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.RepetitionPattern.IsSet">
+            <summary>
+            Determines whether any properties for this <see cref="T:Microsoft.Win32.TaskScheduler.RepetitionPattern"/> have been set.
+            </summary>
+            <returns>
+              <c>true</c> if properties have been set; otherwise, <c>false</c>.
+            </returns>
+        </member>
         <member name="P:Microsoft.Win32.TaskScheduler.RepetitionPattern.Duration">
             <summary>
             Gets or sets how long the pattern is repeated.
@@ -3137,6 +3368,12 @@
             Gets the non-localized trigger string for V2 triggers.
             </summary>
             <returns>String describing the trigger.</returns>
+        </member>
+        <member name="M:Microsoft.Win32.TaskScheduler.SessionStateChangeTrigger.StateChangeIsSet">
+            <summary>
+            Returns a value indicating if the StateChange property has been set.
+            </summary>
+            <returns>StateChange property has been set.</returns>
         </member>
         <member name="P:Microsoft.Win32.TaskScheduler.SessionStateChangeTrigger.Delay">
             <summary>
