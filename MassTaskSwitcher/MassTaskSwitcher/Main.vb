@@ -23,6 +23,7 @@ Public Class Main
     Dim ignoredTasksFilePath As String ' name of the file containing the saved ignoredTasks
     Dim filterCheckEvent As Boolean ' If True, then the ListView.ItemCheck event will check for "Ignore" in the ListViewItem's Tag before allowing the check
     Dim DisableCheckChecker As Boolean
+    Dim isV2 As Boolean
 
     ' Form class constructor--use to intialize globals
     Public Sub New()
@@ -34,6 +35,9 @@ Public Class Main
         AppFolder = IO.Path.GetDirectoryName(Application.ExecutablePath)
         ignoredTasksFilePath = System.IO.Path.Combine(AppFolder, "ignoredTasks.txt")
         filterCheckEvent = True ' Do not allow the tag="ignore" ListViewItems to be checked.
+        Using ts As New TaskService
+            isV2 = (ts.HighestSupportedVersion >= New Version(1, 2))
+        End Using
 
     End Sub
 
@@ -67,6 +71,13 @@ Public Class Main
                     Me.Close()
             End Select
         Next
+
+
+        If cbTsGuiType.Items.Count > 0 Then
+            cbTsGuiType.SelectedIndex = 0
+        End If
+        cbTsGuiType.Visible = Not isV2
+
 
         ReadIgnoredTasksFile()
         InitList()
@@ -170,18 +181,26 @@ Public Class Main
     End Sub
 
     Private Sub btnEditSelected_Click(sender As System.Object, e As System.EventArgs) Handles btnEditSelected.Click
-        Using ts As New TaskService, tskEdDlg As New TaskEditDialog()
-            tskEdDlg.Editable = True
-            tskEdDlg.RegisterTaskOnAccept = True
-            For Each li As ListViewItem In lvTasks.SelectedItems
-                Try
-                    tskEdDlg.Initialize(ts.RootFolder.Tasks.Item(li.Name))
-                    tskEdDlg.ShowDialog()
-                Catch ex As System.UnauthorizedAccessException
-                    MsgBox("You do not have permission to modify the task " + li.Name + ".")
-                End Try
-            Next
-        End Using
+        If isV2 Or cbTsGuiType.SelectedText = "Windows 7-style GUI" Then
+            Using ts As New TaskService, tskEdDlg As New TaskEditDialog()
+                tskEdDlg.Editable = True
+                tskEdDlg.RegisterTaskOnAccept = True
+                For Each li As ListViewItem In lvTasks.SelectedItems
+                    Try
+                        tskEdDlg.Initialize(ts.RootFolder.Tasks.Item(li.Name))
+                        tskEdDlg.ShowDialog()
+                    Catch ex As System.UnauthorizedAccessException
+                        MsgBox("You do not have permission to modify the task " + li.Name + ".")
+                    End Try
+                Next
+            End Using
+        Else
+            Using ts As New TaskService
+                For Each li As ListViewItem In lvTasks.SelectedItems
+                    ts.RootFolder.Tasks.Item(li.Name).ShowPropertyPage()
+                Next
+            End Using
+        End If
     End Sub
 
     ' Timer1 tick elapses

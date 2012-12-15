@@ -23,7 +23,7 @@ Partial Class Main
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim ListViewItem1 As System.Windows.Forms.ListViewItem = New System.Windows.Forms.ListViewItem(New String() {"Default Item Name", "Disabled", "", ""}, -1)
+        Dim ListViewItem3 As System.Windows.Forms.ListViewItem = New System.Windows.Forms.ListViewItem(New String() {"Default Item Name", "Disabled", "", ""}, -1)
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
         Me.lvTasks = New System.Windows.Forms.ListView()
         Me.tskName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -37,6 +37,7 @@ Partial Class Main
         Me.btnIgnoredTasks = New System.Windows.Forms.Button()
         Me.lblInstructions = New System.Windows.Forms.Label()
         Me.btnEditSelected = New System.Windows.Forms.Button()
+        Me.cbTsGuiType = New System.Windows.Forms.ComboBox()
         Me.SuspendLayout()
         '
         'lvTasks
@@ -47,8 +48,8 @@ Partial Class Main
         Me.lvTasks.CheckBoxes = True
         Me.lvTasks.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.tskName, Me.tskState, Me.tskLastRun, Me.tskNextRun})
         Me.lvTasks.GridLines = True
-        ListViewItem1.StateImageIndex = 0
-        Me.lvTasks.Items.AddRange(New System.Windows.Forms.ListViewItem() {ListViewItem1})
+        ListViewItem3.StateImageIndex = 0
+        Me.lvTasks.Items.AddRange(New System.Windows.Forms.ListViewItem() {ListViewItem3})
         Me.lvTasks.Location = New System.Drawing.Point(12, 76)
         Me.lvTasks.Name = "lvTasks"
         Me.lvTasks.Size = New System.Drawing.Size(621, 277)
@@ -138,11 +139,21 @@ Partial Class Main
         Me.btnEditSelected.Text = "Edit Selected"
         Me.btnEditSelected.UseVisualStyleBackColor = True
         '
+        'cbTsGuiType
+        '
+        Me.cbTsGuiType.FormattingEnabled = True
+        Me.cbTsGuiType.Items.AddRange(New Object() {"Native (XP) GUI", "Windows 7-style GUI"})
+        Me.cbTsGuiType.Location = New System.Drawing.Point(129, 368)
+        Me.cbTsGuiType.Name = "cbTsGuiType"
+        Me.cbTsGuiType.Size = New System.Drawing.Size(111, 21)
+        Me.cbTsGuiType.TabIndex = 5
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(645, 448)
+        Me.Controls.Add(Me.cbTsGuiType)
         Me.Controls.Add(Me.btnEditSelected)
         Me.Controls.Add(Me.lblInstructions)
         Me.Controls.Add(Me.btnClose)
@@ -168,4 +179,5 @@ Partial Class Main
     Friend WithEvents btnIgnoredTasks As System.Windows.Forms.Button
     Friend WithEvents lblInstructions As System.Windows.Forms.Label
     Friend WithEvents btnEditSelected As System.Windows.Forms.Button
+    Friend WithEvents cbTsGuiType As System.Windows.Forms.ComboBox
 End Class
