@@ -23,7 +23,7 @@ Partial Class Main
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim ListViewItem3 As System.Windows.Forms.ListViewItem = New System.Windows.Forms.ListViewItem(New String() {"Default Item Name", "Disabled", "", ""}, -1)
+        Dim ListViewItem1 As System.Windows.Forms.ListViewItem = New System.Windows.Forms.ListViewItem(New String() {"Default Item Name", "Disabled", "", ""}, -1)
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
         Me.lvTasks = New System.Windows.Forms.ListView()
         Me.tskName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -43,13 +43,13 @@ Partial Class Main
         'lvTasks
         '
         Me.lvTasks.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+                    Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvTasks.CheckBoxes = True
         Me.lvTasks.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.tskName, Me.tskState, Me.tskLastRun, Me.tskNextRun})
         Me.lvTasks.GridLines = True
-        ListViewItem3.StateImageIndex = 0
-        Me.lvTasks.Items.AddRange(New System.Windows.Forms.ListViewItem() {ListViewItem3})
+        ListViewItem1.StateImageIndex = 0
+        Me.lvTasks.Items.AddRange(New System.Windows.Forms.ListViewItem() {ListViewItem1})
         Me.lvTasks.Location = New System.Drawing.Point(12, 76)
         Me.lvTasks.Name = "lvTasks"
         Me.lvTasks.Size = New System.Drawing.Size(621, 277)
@@ -145,7 +145,7 @@ Partial Class Main
         Me.cbTsGuiType.Items.AddRange(New Object() {"Native (XP) GUI", "Windows 7-style GUI"})
         Me.cbTsGuiType.Location = New System.Drawing.Point(129, 368)
         Me.cbTsGuiType.Name = "cbTsGuiType"
-        Me.cbTsGuiType.Size = New System.Drawing.Size(111, 21)
+        Me.cbTsGuiType.Size = New System.Drawing.Size(137, 21)
         Me.cbTsGuiType.TabIndex = 5
         '
         'Main

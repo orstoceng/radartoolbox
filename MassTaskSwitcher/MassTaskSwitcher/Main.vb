@@ -181,7 +181,7 @@ Public Class Main
     End Sub
 
     Private Sub btnEditSelected_Click(sender As System.Object, e As System.EventArgs) Handles btnEditSelected.Click
-        If isV2 Or cbTsGuiType.SelectedText = "Windows 7-style GUI" Then
+        If isV2 Or cbTsGuiType.SelectedItem.ToString = "Windows 7-style GUI" Then
             Using ts As New TaskService, tskEdDlg As New TaskEditDialog()
                 tskEdDlg.Editable = True
                 tskEdDlg.RegisterTaskOnAccept = True
