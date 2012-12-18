@@ -203,6 +203,22 @@ Public Class Main
         End If
     End Sub
 
+    Private Sub btnOpenTaskScheduler_Click(sender As System.Object, e As System.EventArgs) Handles btnOpenTaskScheduler.Click
+        Process.Start("control.exe", "schedtasks")
+    End Sub
+
+    Private Sub btnDeleteSelected_Click(sender As System.Object, e As System.EventArgs) Handles btnDeleteSelected.Click
+        Using ts As New TaskService
+            For Each li As ListViewItem In lvTasks.SelectedItems
+                Try
+                    ts.RootFolder.DeleteTask(li.Name)
+                Catch ex As System.UnauthorizedAccessException
+                    MsgBox("You do not have permission to modify the task " + li.Name + ".")
+                End Try
+            Next
+        End Using
+    End Sub
+
     ' Timer1 tick elapses
     Private Sub Timer1_Tick(sender As System.Object, e As System.EventArgs) Handles Timer1.Tick
         UpdateList()

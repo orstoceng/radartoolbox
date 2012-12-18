@@ -38,13 +38,15 @@ Partial Class Main
         Me.lblInstructions = New System.Windows.Forms.Label()
         Me.btnEditSelected = New System.Windows.Forms.Button()
         Me.cbTsGuiType = New System.Windows.Forms.ComboBox()
+        Me.btnDeleteSelected = New System.Windows.Forms.Button()
+        Me.btnOpenTaskScheduler = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lvTasks
         '
         Me.lvTasks.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-                    Or System.Windows.Forms.AnchorStyles.Left) _
-                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.lvTasks.CheckBoxes = True
         Me.lvTasks.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.tskName, Me.tskState, Me.tskLastRun, Me.tskNextRun})
         Me.lvTasks.GridLines = True
@@ -143,10 +145,30 @@ Partial Class Main
         '
         Me.cbTsGuiType.FormattingEnabled = True
         Me.cbTsGuiType.Items.AddRange(New Object() {"Native (XP) GUI", "Windows 7-style GUI"})
-        Me.cbTsGuiType.Location = New System.Drawing.Point(129, 368)
+        Me.cbTsGuiType.Location = New System.Drawing.Point(379, 418)
         Me.cbTsGuiType.Name = "cbTsGuiType"
         Me.cbTsGuiType.Size = New System.Drawing.Size(137, 21)
         Me.cbTsGuiType.TabIndex = 5
+        '
+        'btnDeleteSelected
+        '
+        Me.btnDeleteSelected.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnDeleteSelected.Location = New System.Drawing.Point(129, 359)
+        Me.btnDeleteSelected.Name = "btnDeleteSelected"
+        Me.btnDeleteSelected.Size = New System.Drawing.Size(111, 37)
+        Me.btnDeleteSelected.TabIndex = 4
+        Me.btnDeleteSelected.Text = "Delete Selected"
+        Me.btnDeleteSelected.UseVisualStyleBackColor = True
+        '
+        'btnOpenTaskScheduler
+        '
+        Me.btnOpenTaskScheduler.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnOpenTaskScheduler.Location = New System.Drawing.Point(246, 402)
+        Me.btnOpenTaskScheduler.Name = "btnOpenTaskScheduler"
+        Me.btnOpenTaskScheduler.Size = New System.Drawing.Size(111, 37)
+        Me.btnOpenTaskScheduler.TabIndex = 4
+        Me.btnOpenTaskScheduler.Text = "Open Task Scheduler"
+        Me.btnOpenTaskScheduler.UseVisualStyleBackColor = True
         '
         'Main
         '
@@ -154,6 +176,8 @@ Partial Class Main
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(645, 448)
         Me.Controls.Add(Me.cbTsGuiType)
+        Me.Controls.Add(Me.btnOpenTaskScheduler)
+        Me.Controls.Add(Me.btnDeleteSelected)
         Me.Controls.Add(Me.btnEditSelected)
         Me.Controls.Add(Me.lblInstructions)
         Me.Controls.Add(Me.btnClose)
@@ -180,4 +204,6 @@ Partial Class Main
     Friend WithEvents lblInstructions As System.Windows.Forms.Label
     Friend WithEvents btnEditSelected As System.Windows.Forms.Button
     Friend WithEvents cbTsGuiType As System.Windows.Forms.ComboBox
+    Friend WithEvents btnDeleteSelected As System.Windows.Forms.Button
+    Friend WithEvents btnOpenTaskScheduler As System.Windows.Forms.Button
 End Class
