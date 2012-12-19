@@ -1,35 +1,35 @@
 ﻿Option Explicit On
 Option Strict On
 
-Public Class SelectTasksToIgnore
+Public Class SelectTasksToLock
 
     'Use .Shown event instead of .Load event so it runs every time the form opens, not just the first time
-    Private Sub SelectTasksToIgnore_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
-        lvIgnoredTasks.Items.Clear()
+    Private Sub SelectTasksToLock_Shown(sender As Object, e As System.EventArgs) Handles Me.Shown
+        lvLockedTasks.Items.Clear()
         For Each m_li As ListViewItem In Main.lvTasks.Items
             Dim li As New ListViewItem
             li = New ListViewItem({m_li.Name})
             li.Name = m_li.Name
-            If Not m_li.Tag Is Nothing And CType(m_li.Tag, String) = "ignore" Then
+            If Not m_li.Tag Is Nothing And CType(m_li.Tag, Main.lvItmTag).lock Then
                 li.Checked = True
-                lvIgnoredTasks.Items.Add(li)
+                lvLockedTasks.Items.Add(li)
             Else
                 li.Checked = False
-                lvIgnoredTasks.Items.Add(li)
+                lvLockedTasks.Items.Add(li)
             End If
         Next
 
     End Sub
 
     Private Sub btnOK_Click(sender As System.Object, e As System.EventArgs) Handles btnOK.Click
-        Main.ignoredTasks.Clear()
+        Main.lockedTasks.Clear()
         Dim count As Integer = 0
-        For Each li As ListViewItem In lvIgnoredTasks.Items
+        For Each li As ListViewItem In lvLockedTasks.Items
             If li.Checked Then
-                Main.ignoredTasks.Add(li.Name)
+                Main.lockedTasks.Add(li.Name)
             End If
         Next
-        Main.InitList()
+        Main.InitListView()
         Me.Close()
     End Sub
 

@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class SelectTasksToIgnore
+Partial Class SelectTasksToLock
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -24,7 +24,7 @@ Partial Class SelectTasksToIgnore
     Private Sub InitializeComponent()
         Me.btnOK = New System.Windows.Forms.Button()
         Me.btnCancel = New System.Windows.Forms.Button()
-        Me.lvIgnoredTasks = New System.Windows.Forms.ListView()
+        Me.lvLockedTasks = New System.Windows.Forms.ListView()
         Me.taskName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
         Me.SuspendLayout()
         '
@@ -48,40 +48,40 @@ Partial Class SelectTasksToIgnore
         Me.btnCancel.Text = "Cancel"
         Me.btnCancel.UseVisualStyleBackColor = True
         '
-        'lvIgnoredTasks
+        'lvLockedTasks
         '
-        Me.lvIgnoredTasks.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+        Me.lvLockedTasks.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lvIgnoredTasks.CheckBoxes = True
-        Me.lvIgnoredTasks.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.taskName})
-        Me.lvIgnoredTasks.Location = New System.Drawing.Point(12, 12)
-        Me.lvIgnoredTasks.Name = "lvIgnoredTasks"
-        Me.lvIgnoredTasks.Size = New System.Drawing.Size(438, 194)
-        Me.lvIgnoredTasks.TabIndex = 2
-        Me.lvIgnoredTasks.UseCompatibleStateImageBehavior = False
-        Me.lvIgnoredTasks.View = System.Windows.Forms.View.Details
+        Me.lvLockedTasks.CheckBoxes = True
+        Me.lvLockedTasks.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.taskName})
+        Me.lvLockedTasks.Location = New System.Drawing.Point(12, 12)
+        Me.lvLockedTasks.Name = "lvLockedTasks"
+        Me.lvLockedTasks.Size = New System.Drawing.Size(438, 194)
+        Me.lvLockedTasks.TabIndex = 2
+        Me.lvLockedTasks.UseCompatibleStateImageBehavior = False
+        Me.lvLockedTasks.View = System.Windows.Forms.View.Details
         '
         'taskName
         '
         Me.taskName.Text = "Task"
         Me.taskName.Width = 434
         '
-        'SelectTasksToIgnore
+        'SelectTasksToLock
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(467, 263)
-        Me.Controls.Add(Me.lvIgnoredTasks)
+        Me.Controls.Add(Me.lvLockedTasks)
         Me.Controls.Add(Me.btnCancel)
         Me.Controls.Add(Me.btnOK)
-        Me.Name = "SelectTasksToIgnore"
-        Me.Text = "SelectTasksToIgnore"
+        Me.Name = "SelectTasksToLock"
+        Me.Text = "Select Tasks To Lock"
         Me.ResumeLayout(False)
 
     End Sub
     Friend WithEvents btnOK As System.Windows.Forms.Button
     Friend WithEvents btnCancel As System.Windows.Forms.Button
-    Friend WithEvents lvIgnoredTasks As System.Windows.Forms.ListView
+    Friend WithEvents lvLockedTasks As System.Windows.Forms.ListView
     Friend WithEvents taskName As System.Windows.Forms.ColumnHeader
 End Class

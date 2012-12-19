@@ -121,9 +121,10 @@
     <value>17, 17</value>
   </metadata>
   <data name="lblInstructions.Text" xml:space="preserve">
-    <value>Check or uncheck tasks to enable/disable them.
-Greyed-out tasks may not be enabled or disabled.
-Click "Select Tasks to Not Change" to change which tasks are greyed-out.
-A task is automatically greyed-out if the user does not have permission to change the task.</value>
+    <value>- Check or uncheck tasks to enable/disable them.
+- Greyed-out tasks may not be enabled or disabled (they are "locked")
+- Click "Select Tasks to Lock" to change which tasks are locked.
+- A task is automatically locked if the user does not have permission to change the task.
+- Press F2 while a task is selected to rename the task</value>
   </data>
 </root>
