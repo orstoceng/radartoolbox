@@ -31,7 +31,8 @@ Public Class Main
     Dim DisableCheckEvents As Boolean ' This is used to disable the ListView_check and _checked events when the form is intializing
     Dim isV2 As Boolean
     Dim oldLiLabel As String ' When a ListViewItem label is changed, the original label is stored in this value
-    Dim tmpFiles As New Dictionary(Of String, String) ' Array of exported tasks and corresponding temporary XML filenames, used for restoring all tasks to the state as of opening the tool
+    Dim tmpFiles As New Dictionary(Of String, String) ' Exported tasks and corresponding temporary XML filenames, used for restoring all tasks to the state as of opening the tool
+    Dim nonExportedTasks As New ArrayList ' Array of tasks that could not be exported. Make sure we don't delete these tasks if we do an "undo"
 
 
     ' Form class constructor--use to intialize globals
@@ -116,7 +117,7 @@ Public Class Main
                         li.Checked = True
                         Try
                             ts.RootFolder.Tasks.Item(li.Name).Enabled = li.Checked
-                        Catch noAccess As System.UnauthorizedAccessException
+                        Catch noAccess As UnauthorizedAccessException
                             ' If we can't change a task, just send a message to the user
                             MsgBox("You do not have access to enable or disable the task " + li.Name + ".")
                         Catch ex As Exception
@@ -144,7 +145,7 @@ Public Class Main
                         li.Checked = False
                         Try
                             ts.RootFolder.Tasks.Item(li.Name).Enabled = li.Checked
-                        Catch noAccess As System.UnauthorizedAccessException
+                        Catch noAccess As UnauthorizedAccessException
                             ' If we can't change a task, just send a message to the user
                             MsgBox("You do not have access to enable or disable the task " + li.Name + ".")
                         Catch ex As Exception
@@ -186,7 +187,7 @@ Public Class Main
             Using ts As New TaskService
                 Try
                     ts.RootFolder.Tasks.Item(e.Item.Name).Enabled = e.Item.Checked
-                Catch noAccess As System.UnauthorizedAccessException
+                Catch noAccess As UnauthorizedAccessException
                     ' If we can't change a task, just send a message to the user
                     MsgBox("You do not have access to enable or disable the task " + e.Item.Name + ".")
                 Catch ex As Exception
@@ -230,7 +231,7 @@ Public Class Main
                 ts.RootFolder.DeleteTask(oldLiLabel)
                 ts.RootFolder.ImportTask(e.Label, tempFileName)
                 System.IO.File.Delete(tempFileName)
-            Catch uaex As System.UnauthorizedAccessException
+            Catch uaex As UnauthorizedAccessException
                 MsgBox("You do not have permission to modify the task " + oldLiLabel + ".")
                 e.CancelEdit = True
             Catch ex As Exception
@@ -250,7 +251,7 @@ Public Class Main
                     Try
                         tskEdDlg.Initialize(ts.RootFolder.Tasks.Item(li.Name))
                         tskEdDlg.ShowDialog()
-                    Catch uaex As System.UnauthorizedAccessException
+                    Catch uaex As UnauthorizedAccessException
                         MsgBox("You do not have permission to modify the task " + li.Name + ".")
                     Catch ex As Exception
                         ' Rethrow other exceptions
@@ -278,7 +279,7 @@ Public Class Main
                     If MsgBox("Are you sure you want to delete this task? " + vbCrLf + li.Name, MsgBoxStyle.YesNo, "Delete Task?") = MsgBoxResult.Yes Then
                         ts.RootFolder.DeleteTask(li.Name)
                     End If
-                Catch uaex As System.UnauthorizedAccessException
+                Catch uaex As UnauthorizedAccessException
                     MsgBox("You do not have permission to modify the task " + li.Name + ".")
                 Catch ex As Exception
                     ' Rethrow other exceptions
@@ -320,7 +321,7 @@ Public Class Main
                     st.noMod = False
                     ' Try setting the task's Enabled state to itself. Doesn't change the task, but tests access.
                     tsk.Enabled = tsk.Enabled
-                Catch uaex As System.UnauthorizedAccessException
+                Catch uaex As UnauthorizedAccessException
                     ' If not, then it may not be modified
                     st.noMod = True
                 Catch ex As Exception
@@ -499,7 +500,7 @@ Public Class Main
                 Try
                     ' See if the task is modifiable
                     tsk.Enabled = tsk.Enabled
-                Catch uaex As System.UnauthorizedAccessException
+                Catch uaex As UnauthorizedAccessException
                     ' If it is not modifiable, don't save it.
                     Continue For
                 Catch ex As Exception
@@ -509,7 +510,14 @@ Public Class Main
                 ' Save the name of the task and a new tempfile name for the task to the tmpFiles dictionary
                 tmpFiles.Add(tsk.Name, System.IO.Path.GetTempFileName)
                 ' Export the task to a new tempfile
-                tsk.Export(tmpFiles(tsk.Name))
+                Try
+                    tsk.Export(tmpFiles(tsk.Name))
+                Catch nrfex As NullReferenceException
+                    nonExportedTasks.Add(tsk.Name)
+                Catch ex As Exception
+                    ' Rethrow other exceptions
+                    Throw (ex)
+                End Try
             Next
         End Using
     End Sub
@@ -521,14 +529,17 @@ Public Class Main
                 Try
                     ' See if the task is modifiable
                     tsk.Enabled = tsk.Enabled
-                Catch uaex As System.UnauthorizedAccessException
+                Catch uaex As UnauthorizedAccessException
                     ' If it is not modifiable, don't delete it.
                     Continue For
                 Catch ex As Exception
                     ' Rethrow other exceptions
                     Throw (ex)
                 End Try
-                ts.RootFolder.DeleteTask(tsk.Name)
+                If Not nonExportedTasks.Contains(tsk.Name) Then
+                    ' Don't delete it if we couldn't export it
+                    ts.RootFolder.DeleteTask(tsk.Name)
+                End If
             Next
 
             ' Now import the exported tasks
