@@ -1,0 +1,11 @@
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\bin\Debug\WMI_Reboot.exe.config
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\bin\Debug\WMI_Reboot.exe
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\bin\Debug\WMI_Reboot.pdb
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\bin\Debug\WMI_Reboot.xml
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\obj\x86\Debug\WMI_Reboot.Resources.resources
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\obj\x86\Debug\WMI_Reboot.exe
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\obj\x86\Debug\WMI_Reboot.xml
+C:\Visual_Studio_Projects\Rebooter\WMI_Reboot\WMI_Reboot\obj\x86\Debug\WMI_Reboot.pdb
