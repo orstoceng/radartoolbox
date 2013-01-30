@@ -1,0 +1,10 @@
+C:\Visual_Studio_Projects\CmdRedirect\obj\Debug\CmdRedirect.exe
+C:\Visual_Studio_Projects\CmdRedirect\obj\Debug\CmdRedirect.pdb
+C:\Visual_Studio_Projects\CmdRedirect\bin\CmdRedirect.exe
+C:\Visual_Studio_Projects\CmdRedirect\bin\CmdRedirect.pdb
+C:\Visual_Studio_Projects\CmdRedirect\bin\CmdRedirect.xml
+C:\Visual_Studio_Projects\CmdRedirect\obj\Debug\ResolveAssemblyReference.cache
+C:\Visual_Studio_Projects\CmdRedirect\obj\Debug\CmdRedirect.Form1.resources
+C:\Visual_Studio_Projects\CmdRedirect\obj\Debug\ResGen.read.1.tlog
+C:\Visual_Studio_Projects\CmdRedirect\obj\Debug\ResGen.write.1.tlog
+C:\Visual_Studio_Projects\CmdRedirect\obj\Debug\CmdRedirect.xml
