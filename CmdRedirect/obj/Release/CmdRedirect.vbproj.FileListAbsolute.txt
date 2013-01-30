@@ -1,8 +1,0 @@
-C:\Visual_Studio_Projects\CmdRedirect\bin\CmdRedirect.exe
-C:\Visual_Studio_Projects\CmdRedirect\bin\CmdRedirect.xml
-C:\Visual_Studio_Projects\CmdRedirect\obj\Release\ResolveAssemblyReference.cache
-C:\Visual_Studio_Projects\CmdRedirect\obj\Release\CmdRedirect.Form1.resources
-C:\Visual_Studio_Projects\CmdRedirect\obj\Release\ResGen.read.1.tlog
-C:\Visual_Studio_Projects\CmdRedirect\obj\Release\ResGen.write.1.tlog
-C:\Visual_Studio_Projects\CmdRedirect\obj\Release\CmdRedirect.exe
-C:\Visual_Studio_Projects\CmdRedirect\obj\Release\CmdRedirect.xml
