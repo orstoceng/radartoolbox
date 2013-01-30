@@ -295,6 +295,43 @@ Public Class Main
         End Using
     End Sub
 
+    Private Sub btnRevertAllChanges_Click(sender As System.Object, e As System.EventArgs) Handles btnRevertAllChanges.Click
+        If MsgBox("Are you sure you want to revert all changes?", MsgBoxStyle.YesNo, "Revert changes?") = MsgBoxResult.Yes Then
+            ResetTasksByImport()
+        End If
+    End Sub
+
+    Private Sub btnHelp_Click(sender As System.Object, e As System.EventArgs) Handles btnHelp.Click
+        MsgBox("Command-line options: " + vbCrLf + vbCrLf + _
+               "Window position:" + vbCrLf + _
+               "    -tr: top right" + vbCrLf + _
+               "    -tl: top left" + vbCrLf + _
+               "    -br: bottom right" + vbCrLf + _
+               "    -bl: bottom left" + vbCrLf + _
+               "    -center: center" + vbCrLf + vbCrLf + _
+               "Location of script to add custom entires to the DAQ log" + vbCrLf + _
+               "(default is C:\1MarineWinXP\scripts\custom_daq_log_entry.bat):" + vbCrLf + _
+               "    --logScript=" + Chr(34) + "<path_to_script>" + Chr(34))
+        '                Case "-tl"
+        'Me.Location = New Point(0, 0)
+        '        Case "-tr"
+        'Me.Location = New Point(maxX, 0)
+        '        Case "-bl"
+        'Me.Location = New Point(0, maxY)
+        '        Case "-br"
+        'Me.Location = New Point(maxX, maxY)
+        '        Case "-center"
+        'Me.Location = New Point(centerX, centerY)
+        '        Case Else
+        'If arg.Substring(0, 12).Equals("--logScript=") Then
+        '    daqLogScriptPath = arg.Substring(12)
+        'Else
+        '    MsgBox("Invalid input argument: " + arg)
+        '    Me.Close()
+
+    End Sub
+
+
     ' Timer1 tick elapses
     Private Sub Timer1_Tick(sender As System.Object, e As System.EventArgs) Handles Timer1.Tick
         UpdateList()
@@ -556,11 +593,5 @@ Public Class Main
         End Using
     End Sub
 
-
-    Private Sub btnRevertAllChanges_Click(sender As System.Object, e As System.EventArgs) Handles btnRevertAllChanges.Click
-        If MsgBox("Are you sure you want to revert all changes?", MsgBoxStyle.YesNo, "Revert changes?") = MsgBoxResult.Yes Then
-            ResetTasksByImport()
-        End If
-    End Sub
 
 End Class

@@ -41,6 +41,7 @@ Partial Class Main
         Me.btnDeleteSelected = New System.Windows.Forms.Button()
         Me.btnOpenTaskScheduler = New System.Windows.Forms.Button()
         Me.btnRevertAllChanges = New System.Windows.Forms.Button()
+        Me.btnHelp = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'lvTasks
@@ -186,11 +187,21 @@ Partial Class Main
         Me.btnRevertAllChanges.UseVisualStyleBackColor = True
         Me.btnRevertAllChanges.Visible = False
         '
+        'btnHelp
+        '
+        Me.btnHelp.Location = New System.Drawing.Point(558, 9)
+        Me.btnHelp.Name = "btnHelp"
+        Me.btnHelp.Size = New System.Drawing.Size(75, 23)
+        Me.btnHelp.TabIndex = 7
+        Me.btnHelp.Text = "Help"
+        Me.btnHelp.UseVisualStyleBackColor = True
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(645, 448)
+        Me.Controls.Add(Me.btnHelp)
         Me.Controls.Add(Me.btnRevertAllChanges)
         Me.Controls.Add(Me.cbTsGuiType)
         Me.Controls.Add(Me.btnOpenTaskScheduler)
@@ -224,4 +235,5 @@ Partial Class Main
     Friend WithEvents btnDeleteSelected As System.Windows.Forms.Button
     Friend WithEvents btnOpenTaskScheduler As System.Windows.Forms.Button
     Friend WithEvents btnRevertAllChanges As System.Windows.Forms.Button
+    Friend WithEvents btnHelp As System.Windows.Forms.Button
 End Class
