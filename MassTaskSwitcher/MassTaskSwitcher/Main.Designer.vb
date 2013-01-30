@@ -23,7 +23,7 @@ Partial Class Main
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim ListViewItem2 As System.Windows.Forms.ListViewItem = New System.Windows.Forms.ListViewItem(New String() {"Default Item Name", "Disabled", "", ""}, -1)
+        Dim ListViewItem1 As System.Windows.Forms.ListViewItem = New System.Windows.Forms.ListViewItem(New String() {"Default Item Name", "Disabled", "", ""}, -1)
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Main))
         Me.lvTasks = New System.Windows.Forms.ListView()
         Me.tskName = CType(New System.Windows.Forms.ColumnHeader(), System.Windows.Forms.ColumnHeader)
@@ -51,8 +51,8 @@ Partial Class Main
         Me.lvTasks.CheckBoxes = True
         Me.lvTasks.Columns.AddRange(New System.Windows.Forms.ColumnHeader() {Me.tskName, Me.tskState, Me.tskLastRun, Me.tskNextRun})
         Me.lvTasks.GridLines = True
-        ListViewItem2.StateImageIndex = 0
-        Me.lvTasks.Items.AddRange(New System.Windows.Forms.ListViewItem() {ListViewItem2})
+        ListViewItem1.StateImageIndex = 0
+        Me.lvTasks.Items.AddRange(New System.Windows.Forms.ListViewItem() {ListViewItem1})
         Me.lvTasks.Location = New System.Drawing.Point(12, 77)
         Me.lvTasks.Name = "lvTasks"
         Me.lvTasks.Size = New System.Drawing.Size(621, 294)
@@ -141,6 +141,7 @@ Partial Class Main
         Me.btnEditSelected.TabIndex = 4
         Me.btnEditSelected.Text = "Edit Selected"
         Me.btnEditSelected.UseVisualStyleBackColor = True
+        Me.btnEditSelected.Visible = False
         '
         'cbTsGuiType
         '
@@ -151,6 +152,7 @@ Partial Class Main
         Me.cbTsGuiType.Name = "cbTsGuiType"
         Me.cbTsGuiType.Size = New System.Drawing.Size(136, 21)
         Me.cbTsGuiType.TabIndex = 5
+        Me.cbTsGuiType.Visible = False
         '
         'btnDeleteSelected
         '
@@ -161,6 +163,7 @@ Partial Class Main
         Me.btnDeleteSelected.TabIndex = 4
         Me.btnDeleteSelected.Text = "Delete Selected"
         Me.btnDeleteSelected.UseVisualStyleBackColor = True
+        Me.btnDeleteSelected.Visible = False
         '
         'btnOpenTaskScheduler
         '
@@ -181,6 +184,7 @@ Partial Class Main
         Me.btnRevertAllChanges.TabIndex = 6
         Me.btnRevertAllChanges.Text = "Revert All Changes"
         Me.btnRevertAllChanges.UseVisualStyleBackColor = True
+        Me.btnRevertAllChanges.Visible = False
         '
         'Main
         '

@@ -33,6 +33,7 @@ Public Class Main
     Dim oldLiLabel As String ' When a ListViewItem label is changed, the original label is stored in this value
     Dim tmpFiles As New Dictionary(Of String, String) ' Exported tasks and corresponding temporary XML filenames, used for restoring all tasks to the state as of opening the tool
     Dim nonExportedTasks As New ArrayList ' Array of tasks that could not be exported. Make sure we don't delete these tasks if we do an "undo"
+    Dim daqLogScriptPath As String
 
 
     ' Form class constructor--use to intialize globals
@@ -48,6 +49,7 @@ Public Class Main
         Using ts As New TaskService
             isV2 = (ts.HighestSupportedVersion >= New Version(1, 2))
         End Using
+        daqLogScriptPath = "C:\1MarineWinXP\scripts\custom_daq_log_entry.bat"
 
     End Sub
 
@@ -76,8 +78,12 @@ Public Class Main
                 Case "-center"
                     Me.Location = New Point(centerX, centerY)
                 Case Else
-                    MsgBox("Invalid input argument: " + arg)
-                    Me.Close()
+                    If arg.Substring(0, 12).Equals("--logScript=") Then
+                        daqLogScriptPath = arg.Substring(12)
+                    Else
+                        MsgBox("Invalid input argument: " + arg)
+                        Me.Close()
+                    End If
             End Select
         Next
 
@@ -87,11 +93,11 @@ Public Class Main
         ' Allow ListViewItem labels to be edited
         lvTasks.LabelEdit = True
 
-        ' Set up the gui combo box
-        If cbTsGuiType.Items.Count > 0 Then
-            cbTsGuiType.SelectedIndex = 0
-        End If
-        cbTsGuiType.Visible = Not isV2
+        '' Set up the gui combo box
+        'If cbTsGuiType.Items.Count > 0 Then
+        '    cbTsGuiType.SelectedIndex = 0
+        'End If
+        'cbTsGuiType.Visible = Not isV2
 
 
         ReadLockedTasksFile() ' Get the names of all the tasks that should be locked.
@@ -104,7 +110,7 @@ Public Class Main
 
     ' "Enable all" button is clicked
     Private Sub btnEnableAll_Click(sender As System.Object, e As System.EventArgs) Handles btnEnableAll.Click
-        Dim logEntry As String = InputBox("If you would like to leave a message in the DAQ log explaining this, enter the message and click OK. Click Cancel to leave no message.", "Log Entry", "All radar tasks disabled for debugging, testing or maintenance.")
+        Dim logEntry As String = InputBox("If you would like to leave a message in the DAQ log explaining this, enter the message and click OK.", "Log Entry", "All radar tasks now enabled.")
         If logEntry.Length > 0 Then
             WriteDaqLogEntry(logEntry)
         End If
@@ -198,75 +204,75 @@ Public Class Main
         End If
     End Sub
 
-    ' A key is released while an item in the ListView is selected
-    Private Sub lvTasks_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles lvTasks.KeyUp
-        If e.KeyData = Keys.F2 Then
-            ' If it's F2, then edit that item
-            For Each li As ListViewItem In lvTasks.SelectedItems
-                li.BeginEdit()
-            Next
-        End If
-    End Sub
+    '' A key is released while an item in the ListView is selected
+    'Private Sub lvTasks_KeyUp(sender As Object, e As System.Windows.Forms.KeyEventArgs) Handles lvTasks.KeyUp
+    '    If e.KeyData = Keys.F2 Then
+    '        ' If it's F2, then edit that item
+    '        For Each li As ListViewItem In lvTasks.SelectedItems
+    '            li.BeginEdit()
+    '        Next
+    '    End If
+    'End Sub
 
-    ' A label is about to be edited
-    Private Sub lvTasks_BeforeLabelEdit(sender As Object, e As System.Windows.Forms.LabelEditEventArgs) Handles lvTasks.BeforeLabelEdit
-        If CType(lvTasks.Items(e.Item).Tag, lvItmTag).lock Then
-            ' Don't edit if this is a locked task
-            e.CancelEdit = True
-        Else
-            ' Save the existing label
-            oldLiLabel = lvTasks.Items(e.Item).Text
-        End If
-    End Sub
+    '' A label is about to be edited
+    'Private Sub lvTasks_BeforeLabelEdit(sender As Object, e As System.Windows.Forms.LabelEditEventArgs) Handles lvTasks.BeforeLabelEdit
+    '    If CType(lvTasks.Items(e.Item).Tag, lvItmTag).lock Then
+    '        ' Don't edit if this is a locked task
+    '        e.CancelEdit = True
+    '    Else
+    '        ' Save the existing label
+    '        oldLiLabel = lvTasks.Items(e.Item).Text
+    '    End If
+    'End Sub
 
-    ' A label has just been edited
-    Private Sub lvTasks_AfterLabelEdit(sender As Object, e As System.Windows.Forms.LabelEditEventArgs) Handles lvTasks.AfterLabelEdit
-        ' We want to rename the task
-        Using ts As New TaskService
-            Try
-                ' We have to export the task, delete it, and then import it with the new name
-                Dim tempFileName As String = System.IO.Path.GetTempFileName
-                Dim taskPath As String = ts.RootFolder.Tasks(oldLiLabel).Path
-                ts.RootFolder.Tasks(oldLiLabel).Export(tempFileName)
-                ts.RootFolder.DeleteTask(oldLiLabel)
-                ts.RootFolder.ImportTask(e.Label, tempFileName)
-                System.IO.File.Delete(tempFileName)
-            Catch uaex As UnauthorizedAccessException
-                MsgBox("You do not have permission to modify the task " + oldLiLabel + ".")
-                e.CancelEdit = True
-            Catch ex As Exception
-                ' Rethrow any other exceptions
-                Throw ex
-            End Try
-        End Using
-    End Sub
+    '' A label has just been edited
+    'Private Sub lvTasks_AfterLabelEdit(sender As Object, e As System.Windows.Forms.LabelEditEventArgs) Handles lvTasks.AfterLabelEdit
+    '    ' We want to rename the task
+    '    Using ts As New TaskService
+    '        Try
+    '            ' We have to export the task, delete it, and then import it with the new name
+    '            Dim tempFileName As String = System.IO.Path.GetTempFileName
+    '            Dim taskPath As String = ts.RootFolder.Tasks(oldLiLabel).Path
+    '            ts.RootFolder.Tasks(oldLiLabel).Export(tempFileName)
+    '            ts.RootFolder.DeleteTask(oldLiLabel)
+    '            ts.RootFolder.ImportTask(e.Label, tempFileName)
+    '            System.IO.File.Delete(tempFileName)
+    '        Catch uaex As UnauthorizedAccessException
+    '            MsgBox("You do not have permission to modify the task " + oldLiLabel + ".")
+    '            e.CancelEdit = True
+    '        Catch ex As Exception
+    '            ' Rethrow any other exceptions
+    '            Throw ex
+    '        End Try
+    '    End Using
+    'End Sub
 
 
-    Private Sub btnEditSelected_Click(sender As System.Object, e As System.EventArgs) Handles btnEditSelected.Click
-        If isV2 Or cbTsGuiType.SelectedItem.ToString = "Windows 7-style GUI" Then
-            Using ts As New TaskService, tskEdDlg As New TaskEditDialog()
-                tskEdDlg.Editable = True
-                tskEdDlg.RegisterTaskOnAccept = True
-                For Each li As ListViewItem In lvTasks.SelectedItems
-                    Try
-                        tskEdDlg.Initialize(ts.RootFolder.Tasks.Item(li.Name))
-                        tskEdDlg.ShowDialog()
-                    Catch uaex As UnauthorizedAccessException
-                        MsgBox("You do not have permission to modify the task " + li.Name + ".")
-                    Catch ex As Exception
-                        ' Rethrow other exceptions
-                        Throw ex
-                    End Try
-                Next
-            End Using
-        Else
-            Using ts As New TaskService
-                For Each li As ListViewItem In lvTasks.SelectedItems
-                    ts.RootFolder.Tasks.Item(li.Name).ShowPropertyPage()
-                Next
-            End Using
-        End If
-    End Sub
+    'Private Sub btnEditSelected_Click(sender As System.Object, e As System.EventArgs) Handles btnEditSelected.Click
+    '    If isV2 Or cbTsGuiType.SelectedItem.ToString = "Windows 7-style GUI" Then
+    '        Using ts As New TaskService, tskEdDlg As New TaskEditDialog()
+    '            tskEdDlg.Editable = True
+    '            tskEdDlg.RegisterTaskOnAccept = True
+    '            For Each li As ListViewItem In lvTasks.SelectedItems
+    '                Try
+    '                    tskEdDlg.Initialize(ts.RootFolder.Tasks.Item(li.Name))
+    '                    tskEdDlg.ShowDialog()
+    '                Catch uaex As UnauthorizedAccessException
+    '                    MsgBox("You do not have permission to modify the task " + li.Name + ".")
+    '                Catch ex As Exception
+    '                    ' Rethrow other exceptions
+    '                    Throw ex
+    '                End Try
+    '            Next
+    '        End Using
+    '    Else
+    '        Using ts As New TaskService
+    '            For Each li As ListViewItem In lvTasks.SelectedItems
+    '                ts.RootFolder.Tasks.Item(li.Name).ShowPropertyPage()
+    '            Next
+    '        End Using
+    '    End If
+    'End Sub
 
     Private Sub btnOpenTaskScheduler_Click(sender As System.Object, e As System.EventArgs) Handles btnOpenTaskScheduler.Click
         Process.Start("control.exe", "schedtasks")
@@ -473,7 +479,7 @@ Public Class Main
 
     Private Sub WriteDaqLogEntry(logEntry As String)
         Try
-            Dim psi As New ProcessStartInfo("C:\1MarineWinXP\other_scripts\custom_daq_log_entry.bat", logEntry)
+            Dim psi As New ProcessStartInfo(daqLogScriptPath, logEntry)
             psi.RedirectStandardError = True
             psi.RedirectStandardOutput = True
             psi.CreateNoWindow = False
