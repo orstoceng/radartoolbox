@@ -694,7 +694,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 		ncFile = new NcFile(netCdfFileName.c_str(), NcFile::Replace,&t,total,NcFile::Netcdf4);
 		/* assign global attributes */
 		ncFile->add_att( "project",project.c_str());
-		ncFile->add_att( "project",project.c_str());
+		//ncFile->add_att( "project",project.c_str());
 		ncFile->add_att( "experiment",experiment.c_str());
 		ncFile->add_att( "experiment_code",experimentCode.c_str());
 		ncFile->add_att( "conventions",conventions.c_str());
