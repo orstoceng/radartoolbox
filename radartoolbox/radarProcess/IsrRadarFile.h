@@ -104,7 +104,7 @@ public:
 		return(fileName);
 	};
 	void getFrame(int frameIndex,float *frameBuffer, double *frameTime, float *frameAngle);
-	void getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize);
+	//void getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize);
 	time_t getStartTime();
 	void saveAsFixedPolarNetCdfFile(const char *netCdfFileName);
 	void processGriddedData(const char *fileName,int startFrame, int frameCount,int xSize,int ySize,int xOffset, int yOffset,float gridSize, float heading, bool xyCoordinates,bool summedImage,bool outputNcdf,float imageGridSize,float cLim);

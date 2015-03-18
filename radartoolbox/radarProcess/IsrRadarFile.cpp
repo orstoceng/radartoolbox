@@ -60,7 +60,7 @@ IsrRadarFile::IsrRadarFile(string fileName)
 bool IsrRadarFile::zipperCheck(int frameIndex)
 {
 	const short *framePtr = static_cast<short*>(dataAddress)+20+numberOfCollectionsPerRotation*numberOfRangeBins*frameIndex;
-	short *checkByte;
+//	short *checkByte;
 	for (int i=0; i<numberOfCollectionsPerRotation; i++) {
 		if (*framePtr+(i*numberOfRangeBins)+18!=0)
 			zipperFound=true;
@@ -108,29 +108,29 @@ void IsrRadarFile::getFrame(int frameIndex,float *frameBuffer, double *frameTime
 
 }
 
-
-void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize)
-{
-	float *frameAngle = new float[numberOfCollectionsPerRotation];
-	getFrameAngles(frameIndex,frameAngle);
-	double interpAngles[1440];
-	float y0,y1,x,x0,x1;
-	int sumCount =1;
-	interpAngles[0] =0;
-	for (int i=1; (i<1440); i++) {
-		x = (float)i*0.25;
-		while ((x>frameAngle[sumCount]) && (sumCount<numberOfCollectionsPerRotation))
-			sumCount++;
-		if(sumCount<numberOfCollectionsPerRotation) {
-			x0 = frameAngle[sumCount-1];
-			x1 = frameAngle[sumCount];
-			y0 = sumCount-1;
-			y1 = sumCount;
-			interpAngles[i] = y0 +(x-x0)*((y1-y0)/(x1-x0));
-		} else
-			interpAngles[i] =-1;
-	}
-}
+// getGriddedFrame is not used anywhere.
+//void IsrRadarFile::getGriddedFrame(int frameIndex,short *frameBuffer,int xGridCount,int yGridCount, int xOffset, int yOffset, int gridSize)
+//{
+//	float *frameAngle = new float[numberOfCollectionsPerRotation];
+//	getFrameAngles(frameIndex,frameAngle);
+//	double interpAngles[1440];
+//	float y0,y1,x,x0,x1;
+//	int sumCount =1;
+//	interpAngles[0] =0;
+//	for (int i=1; (i<1440); i++) {
+//		x = (float)i*0.25;
+//		while ((x>frameAngle[sumCount]) && (sumCount<numberOfCollectionsPerRotation))
+//			sumCount++;
+//		if(sumCount<numberOfCollectionsPerRotation) {
+//			x0 = frameAngle[sumCount-1];
+//			x1 = frameAngle[sumCount];
+//			y0 = sumCount-1;
+//			y1 = sumCount;
+//			interpAngles[i] = y0 +(x-x0)*((y1-y0)/(x1-x0));
+//		} else
+//			interpAngles[i] =-1;
+//	}
+//}
 
 
 void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int interpCount,double stepsize)
@@ -139,14 +139,14 @@ void IsrRadarFile::interpFrameAngles(double *frameAngle,double *interpAngles,int
 	int sumCount =1;
 	interpAngles[0]=0;
 	for (int i=1; (i<interpCount); i++) {
-		x = (float)i*stepsize;
+		x = (float)i * (float)stepsize;
 		while ((x>frameAngle[sumCount]) && (sumCount<numberOfCollectionsPerRotation))
 			sumCount++;
 		if(sumCount<numberOfCollectionsPerRotation) {
-			x0 = frameAngle[sumCount-1];
-			x1 = frameAngle[sumCount];
-			y0 = sumCount-1;
-			y1 = sumCount;
+			x0 = (float)frameAngle[sumCount-1];
+			x1 = (float)frameAngle[sumCount];
+			y0 = (float)sumCount-1;
+			y1 = (float)sumCount;
 			interpAngles[i] = y0 +(x-x0)*((y1-y0)/(x1-x0));
 		} else
 			interpAngles[i] =-1;
@@ -272,10 +272,10 @@ bool IsrRadarFile::readMetaData()
 		geospatialLonMax =root->FirstChild("geospatial_lon_max")->FirstChild()->Value();
 		geospatialVerticalMin =root->FirstChild("geospatial_vertical_min")->FirstChild()->Value();
 		geospatialVerticalMax =root->FirstChild("geospatial_vertical_max")->FirstChild()->Value();
-		latitude = atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("lat")->FirstChild()->Value());
-		longitude = atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("lon")->FirstChild()->Value());
-		northing = atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("northing")->FirstChild()->Value());
-		easting = atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("easting")->FirstChild()->Value());
+		latitude = (float)atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("lat")->FirstChild()->Value());
+		longitude = (float)atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("lon")->FirstChild()->Value());
+		northing = (float)atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("northing")->FirstChild()->Value());
+		easting = (float)atof(root->FirstChild("radar")->FirstChild("position")->FirstChild("easting")->FirstChild()->Value());
 		dataCentre =root->FirstChild("data_centre")->FirstChild()->Value();
 		dataCentreEmail =root->FirstChild("data_centre_email")->FirstChild()->Value();
 		authorEmail =root->FirstChild("author_email")->FirstChild()->Value();
@@ -294,7 +294,7 @@ bool IsrRadarFile::readMetaData()
 
 int IsrRadarFile::getFileSize()
 {
-	return(file_size(fileName.c_str()));
+	return((int)file_size(fileName.c_str()));
 }
 
 
@@ -364,7 +364,7 @@ bool IsrRadarFile::readAFile()
 		//Get the address of the mapped region
 		void * dataAddress  = a_region->get_address();
 		int dataSize  = a_region->get_size();
-		int lineBuffer[6], *lineBuffPointer;
+		int lineBuffer[6]; //, *lineBuffPointer;
 		char * source = (char *)dataAddress;
 		char * eof = (char *)dataAddress+dataSize;
 		source = getAzimuthLine(source,lineBuffer,eof);
@@ -386,15 +386,15 @@ bool IsrRadarFile::readAFile()
 			int second = -999;
 			int minuet = -999;
 			int miliSecond = -999;
-			int shaftCount, scanCount;
+//			int shaftCount, scanCount;
 			//	  sscanf(lineBuffer,"%d %d %d %d %d %d",&scanCount,&shaftCount,&hour,&minuet,&second,&miliSecond);
 			if (lineCount % numberOfCollectionsPerRotation==0)
 				azimuthZero = lineBuffer[1];
 			if (lineBuffer[2]==-999)
 				collectionTime[lineCount]=-999;
 			else
-				collectionTime[lineCount] = ((double)lineBuffer[2]*1/24)+((double)lineBuffer[3]*1/(60*24))+((double)lineBuffer[4]*1/(60*24*60))+((double)lineBuffer[5]*1/(60*24*60*1000));
-			azimuthAngle[lineCount] = ((double)(lineBuffer[1]-azimuthZero))*360/4096;
+				collectionTime[lineCount] = ((float)lineBuffer[2]*1/24)+((float)lineBuffer[3]*1/(60*24))+((float)lineBuffer[4]*1/(60*24*60))+((float)lineBuffer[5]*1/(60*24*60*1000));
+			azimuthAngle[lineCount] = ((float)(lineBuffer[1]-azimuthZero))*360/4096;
 			lineCount++;
 		}
 		if  (source!=NULL) {
@@ -405,7 +405,7 @@ bool IsrRadarFile::readAFile()
 		if (collectionTime[0] == -999) { // no times for radar
 			float ratotionInterval =(float)totalCaptureTime / (float)numberOfRotations;
 			float incTime = (float) numberOfWaveSumed /(float) pulseRepetitionFrequency;
-			float startTime =getStartTime();
+			float startTime = (float)getStartTime();
 			for (int i=0; i<numberOfCollectionsPerRotation*numberOfRotations; i++)
 
 				collectionTime[i]= startTime+ (incTime *float(i % numberOfCollectionsPerRotation)) +(ratotionInterval* (float)(i /  numberOfCollectionsPerRotation));
@@ -414,7 +414,7 @@ bool IsrRadarFile::readAFile()
 		delete(a_file);
 		delete(a_region);
 		return(true);
-	}
+	} else return(false);
 }
 
 
@@ -500,36 +500,36 @@ void IsrRadarFile::processFile()
 			cout << "\r\nname:" << name;
 			string code =node->FirstChild("code")->FirstChild()->Value();
 			cout << "\r\ncode:" << code;
-			float gridSize = atof(node->FirstChild("grid_size")->FirstChild()->Value());
+			float gridSize = (float)atof(node->FirstChild("grid_size")->FirstChild()->Value());
 			cout << "\r\ngridSize:" << gridSize;
-			float xSize =atof(node->FirstChild("x_size")->FirstChild()->Value());
+			float xSize = (float)atof(node->FirstChild("x_size")->FirstChild()->Value());
 			cout << "\r\nxSize:" << xSize;
-			float ySize =atof(node->FirstChild("y_size")->FirstChild()->Value());
+			float ySize = (float)atof(node->FirstChild("y_size")->FirstChild()->Value());
 			cout << "\r\nySize:" << ySize;
-			float imageGridSize =atof(node->FirstChild("image_grid_size")->FirstChild()->Value());
+			float imageGridSize = (float)atof(node->FirstChild("image_grid_size")->FirstChild()->Value());
 			cout << "\r\nimageGridSize:" << imageGridSize;
-			float xOffset =atof(node->FirstChild("x_offset")->FirstChild()->Value());
+			float xOffset = (float)atof(node->FirstChild("x_offset")->FirstChild()->Value());
 			cout << "\r\nxOffset:" << xOffset;
-			float yOffset =atof(node->FirstChild("y_offset")->FirstChild()->Value());
+			float yOffset = (float)atof(node->FirstChild("y_offset")->FirstChild()->Value());
 			cout << "\r\nyOffset:" << yOffset;
-			float heading =atof(node->FirstChild("rotation_about_radar")->FirstChild()->Value());
+			float heading = (float)atof(node->FirstChild("rotation_about_radar")->FirstChild()->Value());
 			cout << "\r\nheading:" << heading;
-			int startFrame =atoi(node->FirstChild("start_frame")->FirstChild()->Value());
+			int startFrame = (int)atoi(node->FirstChild("start_frame")->FirstChild()->Value());
 			cout << "\r\nstartFrame:" << startFrame;
-			int frameCount =atoi(node->FirstChild("frame_count")->FirstChild()->Value());
+			int frameCount = (int)atoi(node->FirstChild("frame_count")->FirstChild()->Value());
 			cout << "\r\nframeCount:" << frameCount;
-			bool xyCoordinates =strcmp(node->FirstChild("coordinates")->FirstChild()->Value(),"xy")==0;
+			bool xyCoordinates = strcmp(node->FirstChild("coordinates")->FirstChild()->Value(),"xy")==0;
 			cout << "\r\nxyCoordinates:" << xyCoordinates;
-			bool sumImage =strcmp(node->FirstChild("sum_image")->FirstChild()->Value(),"1")==0;
+			bool sumImage = strcmp(node->FirstChild("sum_image")->FirstChild()->Value(),"1")==0;
 			cout << "\r\nsumImage:" << sumImage;
-			bool outputNcdf =strcmp(node->FirstChild("write_netcdf")->FirstChild()->Value(),"1")==0;
+			bool outputNcdf = strcmp(node->FirstChild("write_netcdf")->FirstChild()->Value(),"1")==0;
 			cout << "\r\noutputNcdf:" << outputNcdf;
-			float cLim =atof(node->FirstChild("color_limit")->FirstChild()->Value());
+			float cLim = (float)atof(node->FirstChild("color_limit")->FirstChild()->Value());
 			cout << "\r\ncLim:" << cLim;
 			outputPath=node->FirstChild("output_path")->FirstChild()->Value();
 			cout << "\r\noutputPath:" << outputPath;
 			makeNetCdfFileName(code,"nc");
-			processGriddedData(NULL,startFrame,frameCount,xSize,ySize,xOffset,yOffset,gridSize,heading,xyCoordinates,sumImage,outputNcdf,imageGridSize,cLim);
+			processGriddedData(NULL,startFrame,frameCount,(int)xSize,(int)ySize,(int)xOffset,(int)yOffset,gridSize,heading,xyCoordinates,sumImage,outputNcdf,imageGridSize,cLim);
 		} else if (strcmp(node->Value(),"polar")==0) {
 		} else if (strcmp(node->Value(),"fixedpolar")==0) {
 
@@ -675,7 +675,7 @@ void IsrRadarFile::saveAsFixedPolarNetCdfFile(const char *fileName)
 void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int frameCount,int xSize,int ySize,int xOffset, int yOffset,float gridSize,float heading, bool xyCoordinates,bool summedImage,bool outputNcdf,float imageGridSize,float cLim)
 {
 	ILuint texid;
-	ILboolean success;
+//	ILboolean success;
 	NcVar *northingVar ,*timeVar, *eastingVar, *magVar;
 
 	//  if (fileName==NULL)
@@ -685,7 +685,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 	//size_t buffer =1024*1024;
 	if (frameCount<0)
 		frameCount =numberOfRotations-startFrame;
-	int inpterpbins = 360.0/0.25;
+	int inpterpbins = (int)(360.0/0.25);
 	NcFile *ncFile = NULL;
 	float *times = new float[frameCount];
 	if (outputNcdf) {
@@ -829,7 +829,7 @@ void IsrRadarFile::processGriddedData(const char *fileName,int startFrame, int f
 	if (summedImage) {
 		path p(netCdfFileName);
 		p.replace_extension(".jpg");
-		saveNormalizedMeanJPG(p.string().c_str(),meanImage,1,xSize,ySize,gridSize,imageGridSize,imageGridSize,cLim);
+		saveNormalizedMeanJPG(p.string().c_str(),meanImage,1,(int)xSize,(int)ySize,(int)gridSize,(int)imageGridSize,(int)imageGridSize,cLim);
 		cout << "Image written:" << p.string() << "\r\n" ;
 	}
 	delete (collectionTimes);
@@ -916,7 +916,7 @@ void IsrRadarFile::saveNormalizedMeanJPG(const char *fileName,float *meanImage,b
 void IsrRadarFile::saveAsSummedImage(const char *fileName,int startFrame, int frameCount,int xSize,int ySize,int xOffset, int yOffset,float gridSize,float heading, float cLim)
 {
 	ILuint texid;
-	ILboolean success;
+//	ILboolean success;
 
 
 	if (fileName==NULL)
@@ -925,7 +925,7 @@ void IsrRadarFile::saveAsSummedImage(const char *fileName,int startFrame, int fr
 		frameCount =numberOfRotations-startFrame;
 	//size_t buffer =1024*1024;
 
-	int inpterpbins = 360.0/0.25;
+	int inpterpbins = (int)(360.0/0.25);
 	GpuGrid *gridder = new GpuGrid(numberOfCollectionsPerRotation,numberOfRangeBins-doughNut,0.25,xSize,ySize,(float)sampleRate,true);
 	float *frameBuffer = gridder->getRawFrameBuffer();
 
@@ -943,7 +943,7 @@ void IsrRadarFile::saveAsSummedImage(const char *fileName,int startFrame, int fr
 	ilBindImage(texid); /* Binding of image name */
 	for (int i=startFrame; i<frameCount; i++) { //numberOfRotations
 		getFrame(i,frameBuffer,collectionTimes,collectionAngle);
-		float * interpframe =gridder->interpolateCartFrame(frameBuffer,collectionAngle,xOffset,yOffset,gridSize,heading);
+		float * interpframe = gridder->interpolateCartFrame(frameBuffer,collectionAngle,xOffset,yOffset,gridSize,heading);
 		if (interpframe!=NULL)
 			sumImageArray(meanImage,interpframe,xSize,ySize,frameCount);
 	}
